@@ -15,7 +15,7 @@ def index(request):
 
 def getmovies(request):
     cover = {}
-    for i in range(10):
+    for i in range(2):
         targetDt = datetime(2018, 11, 20) - timedelta(weeks = i )
         targetDt = targetDt.strftime(f'%Y%m%d') # strftime : str특정 포멧으로 바꾸게 해준다.
 
@@ -46,10 +46,10 @@ def getmovies(request):
         data = response.json()
         movieCd = k
         movieNm = data['movieInfoResult']['movieInfo']['movieNm']
-        actors_yjw = data['movieInfoResult']['movieInfo']['actors']
-        director_yjw = data['movieInfoResult']['movieInfo']['directors'][0]
+        actors_yjw = list(map(lambda x: x['peopleNm']  ,data['movieInfoResult']['movieInfo']['actors']))
+        director_yjw = data['movieInfoResult']['movieInfo']['directors'][0]['peopleNm']
         genres = data['movieInfoResult']['movieInfo']['genres']
-        pprint(data)
+        # pprint(data)
         
         BASE_URL = 'https://openapi.naver.com/v1/search/movie.json'
         
@@ -76,19 +76,23 @@ def getmovies(request):
             soup = BeautifulSoup(source,'html.parser')
             div = soup.find('div','people')
             iag_alt = div.find_all('img')
+            print(k)  # 영화 코드
             for d in iag_alt:
                 if d.attrs['alt'] == director_yjw:
-                    print(d.attrs['alt'])  # 영화배우 혹은 감독 이름
+                    
+                    
+                    
+                    print(d.attrs['alt'], '감독')  # 영화배우 혹은 감독 이름
                     print(d.attrs['src'])  # 이미지
 
                 
                 if d.attrs['alt'] in actors_yjw:
                     
-                    print(d.attrs['alt'])  # 영화배우 혹은 감독 이름p
+                    print(d.attrs['alt'], '배우들')  # 영화배우 혹은 감독 이름p
                     print(d.attrs['src'])  # 이미지
+            print()
 
-
-
+            
         elif response['display'] >1:
             for item in response['items']:
                 directors =  list(filter(lambda x: x != "", response['items'][0]['director'].split('|')))

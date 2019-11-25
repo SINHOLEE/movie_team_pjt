@@ -64,7 +64,16 @@ key = config('API_KEY')
 url = f'{ac_url}?key={key}&peopleNm=이병헌'
 response = requests.get(url)
 data = response.json()
-pprint(data['peopleListResult'])
+pprint(data['peopleListResult']['totCnt'])  # totCnt == 1이냐 아니냐
+if data['peopleListResult']['totCnt'] == 1:
+    pass
+elif data['peopleListResult']['totCnt'] >1:
+    filmos = list(filter(lambda x: x != "", data['peopleListResult']['peopleList'][0]['filmoNames'].split('|'))) 
+    print(filmos)
+    pass
+
+
+
 # for d in iag_alt:
 #     print(d.attrs['alt'])
 #     print(d.attrs['src'])
