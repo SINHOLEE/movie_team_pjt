@@ -2,7 +2,7 @@ from django.shortcuts import render,get_object_or_404
 from decouple import config
 from datetime import datetime, timedelta
 from pprint import pprint
-from .models import User, Actor, Director, Movie, Rating, Genre
+from .models import Actor, Director, Movie, Rating, Genre
 import requests
 from IPython import embed
 
