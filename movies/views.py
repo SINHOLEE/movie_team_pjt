@@ -1,4 +1,6 @@
 from django.shortcuts import render,get_object_or_404
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
 from decouple import config
 from datetime import datetime, timedelta
 from pprint import pprint
@@ -42,21 +44,63 @@ def getmovies(request):
         api_url = f'{base_url}?key={key}&movieCd={k}'
         response = requests.get(api_url)
         data = response.json()
+        movieCd = k
+        movieNm = data['movieInfoResult']['movieInfo']['movieNm']
+        actors_yjw = data['movieInfoResult']['movieInfo']['actors']
+        director_yjw = data['movieInfoResult']['movieInfo']['directors'][0]
+        genres = data['movieInfoResult']['movieInfo']['genres']
         pprint(data)
         
-        # BASE_URL = 'https://openapi.naver.com/v1/search/movie.json'
+        BASE_URL = 'https://openapi.naver.com/v1/search/movie.json'
         
-        # ID = config('CLIENT_ID')
-        # SECRET = config('CLIENT_SECRET')
+        ID = config('CLIENT_ID')
+        SECRET = config('CLIENT_SECRET')
 
-        # HEADERS = {
-        #     'X-Naver-Client-id' : ID,
-        #     'X-Naver-Client-Secret' : SECRET,
-        # }
+        HEADERS = {
+            'X-Naver-Client-id' : ID,
+            'X-Naver-Client-Secret' : SECRET,
+        }
+        # naver
+        query = data['movieInfoResult']['movieInfo']['movieNm']
+        API_URL = f'{BASE_URL}?query={query}'
+        response = requests.get(API_URL, headers=HEADERS).json()  # naver
+        if response['display'] == 1:
+            poster_url = response['items'][0]['image']
+            link = response['items'][0]['link']
+            actors_naver =  list(filter(lambda x: x != "", response['items'][0]['actor'].split('|')))
 
-        # query = data['movieInfoResult']['movieInfo']['movieNm']
-        # API_URL = f'{BASE_URL}?query={query}'
-        # response = requests.get(API_URL, headers=HEADERS).json()
+            #img
+            html = urlopen(link)
+            source = html.read()
+            html.close()
+            soup = BeautifulSoup(source,'html.parser')
+            div = soup.find('div','people')
+            iag_alt = div.find_all('img')
+            for d in iag_alt:
+                if d.attrs['alt'] == director_yjw:
+                    print(d.attrs['alt'])  # 영화배우 혹은 감독 이름
+                    print(d.attrs['src'])  # 이미지
+
+                
+                if d.attrs['alt'] in actors_yjw:
+                    
+                    print(d.attrs['alt'])  # 영화배우 혹은 감독 이름p
+                    print(d.attrs['src'])  # 이미지
+
+
+
+        elif response['display'] >1:
+            for item in response['items']:
+                directors =  list(filter(lambda x: x != "", response['items'][0]['director'].split('|')))
+                if director_yjw in directors:
+                    
+                    break
+        else:
+            pass               
+
+
+
+
         # pprint(response)
         # genre_id =  get_object_or_404(Genre, genreNm=genreNm).id
 

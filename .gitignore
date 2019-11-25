@@ -253,3 +253,4 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/venv,macos,python,django,windows,visualstudiocode
 /영화 추천 사이트 pjt 참고자료.md
 /최종PJT.pdf
+.vscode

@@ -1,6 +1,9 @@
 from django.shortcuts import render,get_object_or_404
+from bs4 import BeautifulSoup
+from decouple import config
+import requests
+from urllib.request import urlopen
 from pprint import pprint
-from .movies.models import User,Actor,Genre,Nation,Director,Movie,Rating
 from IPython import embed
 response = {'display': 5,
  'items': [{'actor': '휴 잭맨|조 샐다나|자흐 갈리피아나키스|엠마 톰슨|',
@@ -47,26 +50,42 @@ response = {'display': 5,
     'start': 1,
     'total': 5}
 
-embed()
-actor = Actor()
-genre = Genre.objects.filter(genreNm='드라마') # genreNm
-director = Director()
-movie = Movie()
+actors =  list(filter(lambda x: x != "", response['items'][0]['actor'].split('|')))
+html = urlopen('https://movie.naver.com/movie/bi/mi/basic.nhn?code=181692')
+source = html.read()
+html.close()
+soup = BeautifulSoup(source,'html.parser')
+div = soup.find('div','people')
+iag_alt = div.find_all('img')
+# pprint(div)
 
-if response.get('display') == 0:
-    pass
-elif response.get('display') == 1:
-    pass
+ac_url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json'
+key = config('API_KEY')
+url = f'{ac_url}?key={key}&peopleNm=이병헌'
+response = requests.get(url)
+data = response.json()
+pprint(data['peopleListResult'])
+# for d in iag_alt:
+#     print(d.attrs['alt'])
+#     print(d.attrs['src'])
+# print(actors)
+# embed()
+# actor = Actor()
+# genre = Genre.objects.filter(genreNm='드라마') # genreNm
+# director = Director()
+# movie = Movie()
+
+# if response.get('display') == 0:
+#     pass
+# elif response.get('display') == 1:
+#     pass
 
 
 
-else:
-    for item in response['items']:
-        if item['director'].replace('|','') == directors:
+# else:
+#     for item in response['items']:
+#         if item['director'].replace('|','') == directors:
 
 
 
-            break
-
-if __name__ == '__main__':
-    main()
+            # break
