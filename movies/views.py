@@ -13,8 +13,8 @@ def index(request):
 
 def getmovies(request):
     cover = {}
-    for i in range(2):
-        targetDt = datetime(2019, 11, 20) - timedelta(weeks = i )
+    for i in range(10):
+        targetDt = datetime(2018, 11, 20) - timedelta(weeks = i )
         targetDt = targetDt.strftime(f'%Y%m%d') # strftime : str특정 포멧으로 바꾸게 해준다.
 
         key = config('API_KEY')
@@ -34,7 +34,6 @@ def getmovies(request):
                         'movieNm' : data['boxOfficeResult']['weeklyBoxOfficeList'][rank]['movieNm'],
                         }
                     })
-    # pprint(cover)
     
     base_url ='http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json'
     key = config('API_KEY')
@@ -43,50 +42,23 @@ def getmovies(request):
         api_url = f'{base_url}?key={key}&movieCd={k}'
         response = requests.get(api_url)
         data = response.json()
+        pprint(data)
         
-        if data['movieInfoResult']['movieInfo']['audits'] == []:
-            pass
-        else:
-            watchGradeNm = data['movieInfoResult']['movieInfo']['audits'][0]['watchGradeNm']
+        # BASE_URL = 'https://openapi.naver.com/v1/search/movie.json'
         
-        if data['movieInfoResult']['movieInfo']['genres'] == []:
-            pass
-        else:
-            genreNm = data['movieInfoResult']['movieInfo']['genres'][0]['genreNm']
-        
-        if data['movieInfoResult']['movieInfo']['directors'] == []:
-            pass
-        else:
-            directors = data['movieInfoResult']['movieInfo']['directors'][0]['peopleNm']
-        
-        temp = {
-                'movieCd' : k,
-                'movieNm' : data['movieInfoResult']['movieInfo']['movieNm'],
-                'movieNmEn' : data['movieInfoResult']['movieInfo']['movieNmEn'],
-                'movieNmOg' : data['movieInfoResult']['movieInfo']['movieNmOg'],
-                'watchGradeNm' : watchGradeNm,
-                'openDt': data['movieInfoResult']['movieInfo']['openDt'],
-                'genreNm' : genreNm,
-                'directors' : directors,
-                }
-        pprint(temp)
-        
-        BASE_URL = 'https://openapi.naver.com/v1/search/movie.json'
-        
-        ID = config('CLIENT_ID')
-        SECRET = config('CLIENT_SECRET')
+        # ID = config('CLIENT_ID')
+        # SECRET = config('CLIENT_SECRET')
 
-        HEADERS = {
-            'X-Naver-Client-id' : ID,
-            'X-Naver-Client-Secret' : SECRET,
-        }
+        # HEADERS = {
+        #     'X-Naver-Client-id' : ID,
+        #     'X-Naver-Client-Secret' : SECRET,
+        # }
 
-        query = data['movieInfoResult']['movieInfo']['movieNm']
-        API_URL = f'{BASE_URL}?query={query}'
-        response = requests.get(API_URL, headers=HEADERS).json()
-        pprint(response)
-        embed()
-        genre_id =  get_object_or_404(Genre, genreNm=genreNm).id
+        # query = data['movieInfoResult']['movieInfo']['movieNm']
+        # API_URL = f'{BASE_URL}?query={query}'
+        # response = requests.get(API_URL, headers=HEADERS).json()
+        # pprint(response)
+        # genre_id =  get_object_or_404(Genre, genreNm=genreNm).id
 
         # if response.get('display') == 0:
         #     pass
