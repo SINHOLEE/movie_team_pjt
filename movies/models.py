@@ -1,12 +1,12 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+
 # Create your models here.
-class User(AbstractUser):
-    pass
 
 class Genre(models.Model):
     genreNm = models.CharField(max_length=200)
+    liked_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_genres') 
+    #2 user.liked_genres.all()으로 접근할 수 있도록
     def __str__(self):
         return self.genreNm
 

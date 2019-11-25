@@ -124,4 +124,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-AUTH_USER_MODEL = 'movies.User' 
+AUTH_USER_MODEL = 'accounts.User' # 앱이름.모델이름
