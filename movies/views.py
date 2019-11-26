@@ -17,6 +17,8 @@ def index(request):
 
 def getmovies(request):
     cover = {}
+    embed()
+    return
     for i in range(10):
         targetDt = datetime(2019, 11, 21) - timedelta(weeks = i )
         targetDt = targetDt.strftime(f'%Y%m%d') # strftime : str특정 포멧으로 바꾸게 해준다.
@@ -232,6 +234,8 @@ def getmovies(request):
                                     actor.actor_cd = actor_cd
                                     actor.save()
                         break   
+            if Movie.objects.filter(poster_url=poster_url1):
+                continue
             movie = Movie()
             movie.movieNm = movieNm
             movie.code = k

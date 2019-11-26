@@ -3,6 +3,7 @@
 {% block container %} 
 <a href="{% url 'movies:getmovies' %}">영화정보 받기</a> 
 {% for movie in movies %}
+
     {{movie.movieNm}}
     <img src="{{ movie.poster_url }}" alt="사진">
 {% endfor %}
