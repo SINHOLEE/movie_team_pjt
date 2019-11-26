@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Movie detail
+{% endblock title %}
+
+
+
+{% block container %}
+
+<img src="{{movie.poster_url}}" alt="{{movie.movieNm}}">
+
+
+<h2>영화명: {{movie.movieNm}}</h2>
+<p>{{movie.description}}</p>
+<br>
+{% for genre in genres %}
+<h3>장르</h3>
+<p>{{genre}}</p><br>
+{% endfor %}
+
+
+<h2>참여 배우들</h2>
+{% for actor in actors %}
+<p>{{actor}}</p>
+{% endfor %}
+
+
+<h2>감독</h2>
+<p>{{director}}</p>
+
+
+<a href=" {% url 'movies:like' movie.pk%} ">
+  {% if user in movie.liked_users.all %}
+  <i class="fas fa-heart fa-lg" style="color: red"></i>
+  {% else %}
+  <i class="far fa-heart fa-lg" style="color: red"></i>
+  {% endif %}
+</a>
+
+<h1>{{movie.liked_users.all | length }}명이 이 영화를 좋아합니다.</h1>
+
+
+<h2>평점을 등록해보세요</h2>
+<form method="post" action=" {% url 'movies:rating' movie.pk %} ">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button type="submit">평점 등록 완료!</button>
+</form>
+
+<ul>
+{% for rating in ratings %}
+{{rating.score}} 
+{{rating.comment}}
+{{rating.user}}
+{{rating.created_at}}
+<hr>
+{% endfor %}
+
+</ul>
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+{% endblock container %}

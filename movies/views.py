@@ -1,4 +1,5 @@
 from django.shortcuts import render,get_object_or_404,redirect
+from django.views.decorators.http import require_POST, require_GET
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from decouple import config
@@ -7,12 +8,60 @@ from pprint import pprint
 from .models import Actor, Director, Movie, Rating, Genre
 import requests
 from IPython import embed
+from .forms import RatingForm
+from django.contrib.auth import get_user_model
 
-# Create your views here.
+
 def index(request):
     movies = Movie.objects.all()
     context = {'movies' : movies}
     return render(request, 'movies/index.html', context)
+
+
+# 장르를 좋아요한 유저, 설명, 무비명, 포스터 이미지
+# rating_form , rating(score, comment), movie_liked.user.lengh
+
+# detail에서는 로그인 해야 form이 보여져야 한다.
+def detail(request, movie_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    genres = movie.genre.all()
+    actors = movie.actor.all()
+    director = movie.director.get()
+    form = RatingForm()
+    ratings = movie.ratings.all()
+    context = {
+        'movie':movie,
+        'genres':genres,
+        'actors':actors,
+        'director':director,
+        'form': form,
+        'ratings':ratings,
+    }
+    return render(request, 'movies/detail.html', context)
+
+
+
+def like(request, movie_pk):
+    user = request.user
+    movie = get_object_or_404(Movie, pk=movie_pk)
+
+    if user in movie.liked_users.all():
+        user.liked_movies.remove(movie)
+    else:
+        user.liked_movies.add(movie) 
+
+    return redirect('movies:detail', movie_pk)
+    
+@require_POST
+def rating(request, movie_pk):
+    if request.user.is_authenticated:
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.movie_id = movie_pk
+            rating.user = request.user
+            rating.save()
+            return redirect('movies:detail', movie_pk)
 
 
 def getmovies(request):
