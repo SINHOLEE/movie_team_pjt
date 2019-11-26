@@ -55,22 +55,24 @@ html = urlopen('https://movie.naver.com/movie/bi/mi/basic.nhn?code=181692')
 source = html.read()
 html.close()
 soup = BeautifulSoup(source,'html.parser')
+description = soup.find('p','con_tx').get_text()
+# print(p)
 div = soup.find('div','people')
 iag_alt = div.find_all('img')
 # pprint(div)
 
 ac_url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json'
 key = config('API_KEY')
-url = f'{ac_url}?key={key}&peopleNm=이병헌'
+url = f'{ac_url}?key={key}&peopleNm=브라이언'
 response = requests.get(url)
 data = response.json()
-pprint(data['peopleListResult']['totCnt'])  # totCnt == 1이냐 아니냐
+# pprint(data['peopleListResult']['totCnt'])  # totCnt == 1이냐 아니냐
 if data['peopleListResult']['totCnt'] == 1:
     pass
 elif data['peopleListResult']['totCnt'] >1:
     filmos = list(filter(lambda x: x != "", data['peopleListResult']['peopleList'][0]['filmoNames'].split('|'))) 
     print(filmos)
-    pass
+#     pass
 
 
 

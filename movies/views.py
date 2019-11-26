@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,redirect
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from decouple import config
@@ -15,8 +15,8 @@ def index(request):
 
 def getmovies(request):
     cover = {}
-    for i in range(2):
-        targetDt = datetime(2018, 11, 20) - timedelta(weeks = i )
+    for i in range(10):
+        targetDt = datetime(2019, 11, 21) - timedelta(weeks = i )
         targetDt = targetDt.strftime(f'%Y%m%d') # strftime : str특정 포멧으로 바꾸게 해준다.
 
         key = config('API_KEY')
@@ -44,78 +44,216 @@ def getmovies(request):
         api_url = f'{base_url}?key={key}&movieCd={k}'
         response = requests.get(api_url)
         data = response.json()
-        movieCd = k
-        movieNm = data['movieInfoResult']['movieInfo']['movieNm']
-        actors_yjw = list(map(lambda x: x['peopleNm']  ,data['movieInfoResult']['movieInfo']['actors']))
-        director_yjw = data['movieInfoResult']['movieInfo']['directors'][0]['peopleNm']
-        genres = data['movieInfoResult']['movieInfo']['genres']
-        # pprint(data)
-        
-        BASE_URL = 'https://openapi.naver.com/v1/search/movie.json'
-        
-        ID = config('CLIENT_ID')
-        SECRET = config('CLIENT_SECRET')
+        if Movie.objects.filter(code=k):
+            continue
 
-        HEADERS = {
-            'X-Naver-Client-id' : ID,
-            'X-Naver-Client-Secret' : SECRET,
-        }
-        # naver
-        query = data['movieInfoResult']['movieInfo']['movieNm']
-        API_URL = f'{BASE_URL}?query={query}'
-        response = requests.get(API_URL, headers=HEADERS).json()  # naver
-        if response['display'] == 1:
-            poster_url = response['items'][0]['image']
-            link = response['items'][0]['link']
-            actors_naver =  list(filter(lambda x: x != "", response['items'][0]['actor'].split('|')))
+        try:
+            movieCd = k
+            movieNm = data['movieInfoResult']['movieInfo']['movieNm']
+            actors_yjw = list(map(lambda x: x['peopleNm']  ,data['movieInfoResult']['movieInfo']['actors']))
+            director_yjw = data['movieInfoResult']['movieInfo']['directors'][0]['peopleNm']
+            genres = list(map(lambda x: x['genreNm']  , data['movieInfoResult']['movieInfo']['genres']))
+            
+        
+            for genre1 in genres:
+                if Genre.objects.filter(genreNm=genre1):
+                    continue
+                genre = Genre()
+                genre.genreNm = genre1
+                genre.save()
+            
 
-            #img
-            html = urlopen(link)
-            source = html.read()
-            html.close()
-            soup = BeautifulSoup(source,'html.parser')
-            div = soup.find('div','people')
-            iag_alt = div.find_all('img')
-            print(k)  # 영화 코드
-            for d in iag_alt:
-                if d.attrs['alt'] == director_yjw:
-                    
-                    
-                    
-                    print(d.attrs['alt'], '감독')  # 영화배우 혹은 감독 이름
-                    print(d.attrs['src'])  # 이미지
+            BASE_URL = 'https://openapi.naver.com/v1/search/movie.json'
+            
+            ID = config('CLIENT_ID')
+            SECRET = config('CLIENT_SECRET')
+
+            HEADERS = {
+                'X-Naver-Client-id' : ID,
+                'X-Naver-Client-Secret' : SECRET,
+            }
+            # naver
+            query = data['movieInfoResult']['movieInfo']['movieNm']
+            API_URL = f'{BASE_URL}?query={query}'
+            response = requests.get(API_URL, headers=HEADERS).json()  # naver
+            actor_lis = []
+            if response['display'] == 1:
+
+                poster_url1 = response['items'][0]['image']
+                link = response['items'][0]['link']
+                actors_naver =  list(filter(lambda x: x != "", response['items'][0]['actor'].split('|')))
+                #img
+                html = urlopen(link)
+                source = html.read()
+                html.close()
+                soup = BeautifulSoup(source,'html.parser')
+                description = soup.find('p','con_tx').get_text()
+                div = soup.find('div','people')
+                iag_alt = div.find_all('img')
+                print('movie_code', k)  # 영화 코드
+                ac_url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json'
+                key = config('API_KEY')
+                for d in iag_alt:
+                    if d.attrs['alt'] == director_yjw:
+                        # print(d.attrs['alt'], '감독')  # 영화배우 혹은 감독 이름
+                        # print(d.attrs['src'])  # 이미지
+                        src = d.attrs['src']
+                        directorNm = d.attrs['alt']
+                        url = f'{ac_url}?key={key}&peopleNm={directorNm}'
+                        response = requests.get(url)
+                        data = response.json()
+                        flag = False
+                        if data['peopleListResult']['totCnt'] == 1:
+                            director_cd =  data['peopleListResult']['peopleList'][0]['peopleCd']
+                            flag = True
+                        elif data['peopleListResult']['totCnt'] >1:
+                            for i in range(data['peopleListResult']['totCnt']):
+                                filmos = list(filter(lambda x: x != "", data['peopleListResult']['peopleList'][i]['filmoNames'].split('|'))) 
+                                if movieNm in filmos:
+                                    director_cd =  data['peopleListResult']['peopleList'][i]['peopleCd']
+                                    flag = True
+                                    break
+                        if flag: 
+                            if Director.objects.filter(director_cd=director_cd):
+                                continue
+                            director = Director()
+                            director.director_cd = director_cd
+                            director.directorNm =  director_yjw
+                            director.img_url = src
+                            director.save()                        
+                    if d.attrs['alt'] in actors_yjw:
+                        actorNm = d.attrs['alt']
+                        # print(d.attrs['alt'], '배우')  # 영화배우 혹은 감독 이름p
+                        # print(d.attrs['src'])  # 이미지
+                        src = d.attrs['src']
+                        url = f'{ac_url}?key={key}&peopleNm={actorNm}'
+                        response = requests.get(url)
+                        data = response.json()
+                        flag = False
+                        if data['peopleListResult']['totCnt'] == 1:
+                            actor_cd =  data['peopleListResult']['peopleList'][0]['peopleCd']
+                            flag = True
+                        elif data['peopleListResult']['totCnt'] >1:
+                            for i in range(data['peopleListResult']['totCnt']):
+                                filmos = list(filter(lambda x: x != "", data['peopleListResult']['peopleList'][i]['filmoNames'].split('|'))) 
+                                if movieNm in filmos:
+                                    actor_cd =  data['peopleListResult']['peopleList'][i]['peopleCd']
+                                    flag = True
+                                    break
+                        if flag: 
+                            if Actor.objects.filter(actor_cd=actor_cd):
+                                continue
+                            actor_lis.append(actor_cd)
+                            actor = Actor()
+                            actor.actorNm = actorNm
+                            actor.img_url = src
+                            actor.actor_cd = actor_cd
+                            actor.save()
 
                 
-                if d.attrs['alt'] in actors_yjw:
-                    
-                    print(d.attrs['alt'], '배우들')  # 영화배우 혹은 감독 이름p
-                    print(d.attrs['src'])  # 이미지
-            print()
+            elif response['display'] >1:
+                for item in response['items']:
+                    directors =  list(filter(lambda x: x != "", response['items'][0]['director'].split('|')))
+                    if director_yjw in directors:
+                        poster_url1 = item['image']
+                        link = item['link']
+                        actors_naver =  list(filter(lambda x: x != "", item['actor'].split('|')))
 
+                        #img
+                        html = urlopen(link)
+                        source = html.read()
+                        html.close()
+                        soup = BeautifulSoup(source,'html.parser')
+                        description = soup.find('p','con_tx').get_text()
+
+                        div = soup.find('div','people')
+                        iag_alt = div.find_all('img')
+                        print('movie_code', k)  # 영화 코드
+                        ac_url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json'
+                        key = config('API_KEY')
+                        for d in iag_alt:
+                            if d.attrs['alt'] == director_yjw:
+                                # print(d.attrs['alt'], '감독')  # 영화배우 혹은 감독 이름
+                                # print(d.attrs['src'])  # 이미지
+                                src = d.attrs['src']
+                                directorNm = d.attrs['alt']
+                                url = f'{ac_url}?key={key}&peopleNm={directorNm}'
+                                response = requests.get(url)
+                                data = response.json()
+                                flag = False
+                                if data['peopleListResult']['totCnt'] == 1:
+                                    director_cd =  data['peopleListResult']['peopleList'][0]['peopleCd']
+                                    flag = True
+                                elif data['peopleListResult']['totCnt'] >1:
+                                    for i in range(data['peopleListResult']['totCnt']):
+                                        filmos = list(filter(lambda x: x != "", data['peopleListResult']['peopleList'][i]['filmoNames'].split('|'))) 
+                                        if movieNm in filmos:
+                                            director_cd =  data['peopleListResult']['peopleList'][i]['peopleCd']
+                                            flag = True
+                                            break
+                                if flag: 
+                                    if Director.objects.filter(director_cd=director_cd):
+                                        continue
+                                    director = Director()
+                                    director.director_cd = director_cd
+                                    director.directorNm =  director_yjw
+                                    director.img_url = src
+                                    director.save()                        
+                            if d.attrs['alt'] in actors_yjw:
+                                actorNm = d.attrs['alt']
+                                src = d.attrs['src']
+                                # print(d.attrs['alt'], '배우')  # 영화배우 혹은 감독 이름p
+                                # print(d.attrs['src'])  # 이미지
+                                src = d.attrs['src']
+                                url = f'{ac_url}?key={key}&peopleNm={actorNm}'
+                                response = requests.get(url)
+                                data = response.json()
+                                flag = False
+                                if data['peopleListResult']['totCnt'] == 1:
+                                    actor_cd =  data['peopleListResult']['peopleList'][0]['peopleCd']
+                                    flag = True
+                                elif data['peopleListResult']['totCnt'] >1:
+                                    for i in range(data['peopleListResult']['totCnt']):
+                                        filmos = list(filter(lambda x: x != "", data['peopleListResult']['peopleList'][i]['filmoNames'].split('|'))) 
+                                        if movieNm in filmos:
+                                            actor_cd =  data['peopleListResult']['peopleList'][i]['peopleCd']
+                                            flag = True
+                                            break
+                                if flag: 
+                                    if Actor.objects.filter(actor_cd=actor_cd):
+                                        continue
+                                    actor_lis.append(actor_cd)
+
+                                    actor = Actor()
+                                    actor.actorNm = actorNm
+                                    actor.img_url = src
+                                    actor.actor_cd = actor_cd
+                                    actor.save()
+                        break   
+            movie = Movie()
+            movie.movieNm = movieNm
+            movie.code = k
+            movie.poster_url = poster_url1
+            movie.link_url = link
+            movie.description = description  
             
-        elif response['display'] >1:
-            for item in response['items']:
-                directors =  list(filter(lambda x: x != "", response['items'][0]['director'].split('|')))
-                if director_yjw in directors:
-                    
-                    break
-        else:
-            pass               
-
-
-
-
-        # pprint(response)
-        # genre_id =  get_object_or_404(Genre, genreNm=genreNm).id
-
-        # if response.get('display') == 0:
-        #     pass
-        # elif response.get('display') == 1:
+            movie.save()
+            directors = Director.objects.filter(director_cd=director_cd)
+            # embed()
+            print('actor_list', actor_lis)
+            for actorCd in actor_lis:
+                print('actor_code', actorCd)
+                actor = Actor.objects.filter(actor_cd=actorCd).first()
+                print('actor', actor)
+                actor.movies.add(movie)
+            for director in directors:
+                # print(director)
+                movie.director.add(director)
+            for genre in genres:
+                genre = Genre.objects.get(genreNm=genre)
+                movie.genre.add(genre)
             
-            
+        except:
+            continue
 
-
-    context = {
-        'api_url' : api_url,
-    }
-    return render(request, 'movies/index.html', context)
+    return redirect('movies:index') 
