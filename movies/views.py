@@ -6,20 +6,27 @@ from decouple import config
 from datetime import datetime, timedelta
 from pprint import pprint
 from .models import Actor, Director, Movie, Rating, Genre
-import requests
-from IPython import embed
+from accounts.models import User
 from .forms import RatingForm
 from django.contrib.auth import get_user_model
+import requests
+from IPython import embed
 
 
+# Create your views here.
 def index(request):
     movies = Movie.objects.all()
-    context = {'movies' : movies}
+    user = request.user
+    if user.is_authenticated:
+        genres = user.liked_genres.all()
+    else:
+        genres = [1]
+    context = {
+        'movies' : movies,
+        'genres':genres,
+        'genres_length' : len(genres),
+        }
     return render(request, 'movies/index.html', context)
-
-
-# 장르를 좋아요한 유저, 설명, 무비명, 포스터 이미지
-# rating_form , rating(score, comment), movie_liked.user.lengh
 
 # detail에서는 로그인 해야 form이 보여져야 한다.
 def detail(request, movie_pk):
@@ -62,6 +69,7 @@ def rating(request, movie_pk):
             rating.user = request.user
             rating.save()
             return redirect('movies:detail', movie_pk)
+
 
 
 def getmovies(request):

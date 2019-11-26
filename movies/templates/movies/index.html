@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
 
 {% block container %} 
-<a href="{% url 'movies:getmovies' %}">영화정보 받기</a> 
-{% for movie in movies %}
-<a href=" {% url 'movies:detail' movie.pk %}  ">
-    {{movie.movieNm}}
-    <img src="{{ movie.poster_url }}" alt="사진">
-</a>
+{% comment %} <a href="{% url 'movies:getmovies' %}">영화정보 받기</a>  {% endcomment %}
 
-{% endfor %}
+{% if request.user.is_authenticated %}
+    <p>로그인 됨</p>
+    {% if genres_length == 3 %}
+        {% for movie in movies %}
+        <a href=" {% url 'movies:detail' movie.pk %}  ">
+            {{movie.movieNm}}
+            <img src="{{ movie.poster_url }}" alt="사진">
+        {% endfor %}
+    
+    {% endif %}
+    
+    
+{% else %}
+    <p>로그인하세요</p>
+{% endif %}
+
 {% endblock container %} 
 
 
