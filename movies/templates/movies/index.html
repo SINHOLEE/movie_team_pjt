@@ -5,7 +5,9 @@
 
 {% if request.user.is_authenticated %}
     <p>로그인 됨</p>
+    {{ genres }}
     {% if genres_length == 3 %}
+    
         {% for movie in movies %}
         <a href=" {% url 'movies:detail' movie.pk %}  ">
             {{movie.movieNm}}
