@@ -19,9 +19,22 @@ def index(request):
     user = request.user
     if user.is_authenticated:
         genres = user.liked_genres.all()
+        bucket = [[],[],[]]
+        if len(genres) == 3:
+            for i in range(3):
+                genre = genres[i]
+                cnt = 0
+                for movie in movies:
+                    if genre in movie.genre.all():
+                        bucket[i].append(movie)
+                        cnt += 1
+                    if cnt == 6:
+                        break
     else:
+        bucket = []   
         genres = [1]
     context = {
+        'bucket' : bucket,
         'movies' : movies,
         'genres':genres,
         'genres_length' : len(genres),
