@@ -1,10 +1,13 @@
 {
-    "python.pythonPath": "venv\\Scripts\\python.exe",
+    "python.pythonPath": "venv3/bin/python",
     "files.associations": {
-        "**/templates/*.html": "django-html",
+        "**/*.html": "django-html",
         "**/templates/*": "django-txt",
         "**/requirements{/**,*}.{txt,in}": "pip-requirements"
     },
-    "emmet.includeLanguages": {"django-html": "html"},
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
+    "liveServer.settings.port": 5501,
 
 }

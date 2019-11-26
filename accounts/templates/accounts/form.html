@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Accounts
+{% endblock title %}
+
+{% block container %}
+
+{% comment %} 현재의 url 이름을 확인 {% endcomment %}
+{% if request.resolver_match.url_name == 'signup' %}
+<h2>회원가입</h2>
+{% elif request.resolver_match.url_name == 'login' %}
+<h2>로그인</h2>
+{% elif request.resolver_match.url_name == 'update'%}
+<h2>내 정보 수정</h2>
+<a href=" {% url 'accounts:password' %} ">****비밀번호 수정은 여기서!****</a>
+{% else %}
+<h2>비밀번호 변경</h2>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button type="submit">Submit</button>
+</form>
+{% endblock container %}
