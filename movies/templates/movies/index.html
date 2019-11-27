@@ -9,6 +9,20 @@
 
 {% if request.user.is_authenticated %}
     <p>로그인 됨</p>
+
+
+    <div id="app">
+        <select v-model="selected">
+            <option v-for="option in options" v-bind:value="option.value">
+                [[ option.text ]]
+            </option>
+        </select>
+        {% comment %} <span>Selected: [[ selected ]]</span> {% endcomment %}
+        <a :href="`movieby_genre/${selected}`"> [장르 선택 완료!] </a>
+        <hr>
+    </div> 
+
+
     {% if genres_length == 3%}
         <ul>
         {% for buk in bucket %}
@@ -42,5 +56,41 @@
 {% else %}
     <p>로그인하세요</p>
 {% endif %}
+
+
+<script>
+    new Vue({
+    delimiters: ['[[', ']]'],
+    el: '#app',
+    data: {
+        selected: '16',
+        options: [
+        { text: '애니메이션', value: '1' },
+        { text: '범죄', value: '2' },
+        { text: '드라마', value: '3' },
+        { text: '액션', value: '4' },
+        { text: '어드벤처', value: '5' },
+        { text: 'SF', value: '6' },
+        { text: '스릴러', value: '7' },
+        { text: '판타지', value: '8' },
+        { text: '멜로/로맨스', value: '9' },
+        { text: '코미디', value: '10' },
+        { text: '공포(호러)', value: '11' },
+        { text: '가족', value: '12' },
+        { text: '전쟁', value: '13' },
+        { text: '미스터리', value: '14' },
+        { text: '사극', value: '15' },
+        { text: '기타', value: '16' },
+        { text: '다큐멘터리', value: '17' },
+        { text: '뮤지컬', value: '18' },
+        
+
+
+        ],
+    }
+    })
+</script>
+
+
 {% endblock container %} 
 

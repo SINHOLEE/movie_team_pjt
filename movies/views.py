@@ -100,6 +100,19 @@ def detail(request, movie_pk):
     return render(request, 'movies/detail.html', context)
 
 
+def movieby_genre(request, genre_pk):
+    genre = Genre.objects.get(pk=genre_pk)
+    print(genre.movies.all())
+    movies = Movie.objects.all()
+
+    context = {
+        'genre':genre,
+        'movies':movies,
+    }
+    return render(request, 'movies/movieby_genre.html', context)
+
+
+
 @login_required
 def like(request, movie_pk):
     user = request.user
