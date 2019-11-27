@@ -6,9 +6,8 @@
 <a href="{% url 'movies:getmovies' %}">영화정보 받기(관리자 전용 버튼)</a> 
 {% endif %}
 {% comment %} 수정, 삭제까지는 어떻게 구현해야? {% endcomment %}
-
+<div id="app">
 {% if request.user.is_authenticated %}
-    <p>로그인 됨</p>
     {% if genres_length == 3%}
         <ul>
         {% for buk in bucket %}
@@ -35,12 +34,42 @@
             </li>
         {% endfor %}
         </ul>
-    
+    {% else %}
+        <P>선호하는 장르를 선택해 주세요 꼭! 3가지 종류를 선택하시고, 중복선택을 지양해 주세요</P>
+
+        <form action="{% url 'movies:get_like_genres' %}" method="POST" >
+        {% csrf_token %}
+        <div class="row form-group mb-1">
+            {% for i in priorities %}
+            <div class='card col-4 '>
+                <label for="exampleFormControlSelect1">{{ i }}번째 선호 장르</label>
+                <select class="form-control" name="genre{{i}}" id="exampleFormControlSelect1">
+                    <option value="">선택</option>
+                    {% for genreA in genres_all %}
+                        <option value="{{ genreA }} ">{{ genreA }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">등록</button>
+        </form>
     {% endif %}
     
-    
-{% else %}
-    <p>로그인하세요</p>
 {% endif %}
-{% endblock container %} 
+    
 
+</div>
+<script>
+    const app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+            message: '1123',
+            genres: [],
+        }
+        computed: {
+        }
+    })
+</script>
+{% endblock container %} 
