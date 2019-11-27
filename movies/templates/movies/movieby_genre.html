@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+​
+​
+{% comment %} 셀렉트 박스에서 선택한 장르가 넘어왔다. {% endcomment %}
+​
+{% block container %}
+<h1>{{genre}}를 검색하셨네요!</h1>
+{% for movie in genre.movies.all  %}
+    <h2>영화명: {{movie.movieNm}}</h2>
+    <img src="{{movie.poster_url}}" alt="{{movie.movieNm}}">
+​
+{% endfor %}
+​
+​
+{% endblock container %}
