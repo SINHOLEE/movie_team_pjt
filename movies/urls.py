@@ -10,4 +10,5 @@ urlpatterns = [
     path('<int:rating_pk>/update/', views.update_rating, name ='update_rating'),
     path('<int:rating_pk>/delete/', views.delete_rating, name='delete_rating'),
     path('getmovies/', views.getmovies, name='getmovies'),
+    path('get_like_genres/', views.get_like_genres, name='get_like_genres'),
 ]

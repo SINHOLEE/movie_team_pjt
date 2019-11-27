@@ -3,7 +3,8 @@
     "files.associations": {
         "**/*.html": "django-html",
         "**/templates/*": "django-txt",
-        "**/requirements{/**,*}.{txt,in}": "pip-requirements"
+        "**/requirements{/**,*}.{txt,in}": "pip-requirements",
+        "**/*.config":"yaml",
     },
     "emmet.includeLanguages": {
         "django-html": "html"

@@ -10,6 +10,7 @@ class Genre(models.Model):
     def __str__(self):
         return self.genreNm
 
+
 class Director(models.Model):
     directorNm = models.CharField(max_length=200)
     liked_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_directors') 

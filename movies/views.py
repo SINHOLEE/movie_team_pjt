@@ -18,6 +18,7 @@ from IPython import embed
 # Create your views here.
 def index(request):
     movies = Movie.objects.all()
+    genres_all = Genre.objects.all()
     user = request.user
     if user.is_authenticated:
         genres = user.liked_genres.all()
@@ -38,13 +39,45 @@ def index(request):
         bucket = []   
         genres = [1]
     context = {
-   
+        'priorities': [1,2,3],
+        'genres_all':genres_all,
         'bucket' : bucket,
         'movies' : movies,
         'genres':genres,
         'genres_length' : len(genres),
         }
     return render(request, 'movies/index.html', context)
+
+
+@require_POST
+def get_like_genres(request):
+    print(request.user)
+    print(request.POST)
+    user = request.user
+    genres = ['genre1', 'genre2', 'genre3']
+    flag = True
+    new_set = set()
+    for gn in genres:
+        if gn not in new_set and gn != '':
+            new_set.add(gn)
+        else:
+            flag = False
+            break
+    if flag:
+        for genre_item in genres:
+            print('genre_item', genre_item)
+            # print(request.POST)
+            print(request.POST.get(genre_item))
+            genre = Genre.objects.filter(genreNm=request.POST.get(genre_item).strip()).first()
+            print('genre',genre)
+            user.liked_genres.add(genre)
+
+    else:
+        pass 
+        # 예외처리를 해야하는데...
+    return redirect('movies:index')
+        
+
 
 # detail에서는 로그인 해야 form이 보여져야 한다.
 @require_GET
