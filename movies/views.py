@@ -1,5 +1,7 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.views.decorators.http import require_POST, require_GET
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from decouple import config
@@ -42,6 +44,7 @@ def index(request):
     return render(request, 'movies/index.html', context)
 
 # detail에서는 로그인 해야 form이 보여져야 한다.
+@require_GET
 def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     genres = movie.genre.all()
@@ -60,17 +63,24 @@ def detail(request, movie_pk):
     return render(request, 'movies/detail.html', context)
 
 
-
+@login_required
 def like(request, movie_pk):
     user = request.user
     movie = get_object_or_404(Movie, pk=movie_pk)
 
     if user in movie.liked_users.all():
         user.liked_movies.remove(movie)
+        liked = False
     else:
         user.liked_movies.add(movie) 
+        liked = True
 
-    return redirect('movies:detail', movie_pk)
+    context = {
+        'liked':liked,
+        'count': movie.liked_users.count()
+    }
+
+    return JsonResponse(context)
     
 @require_POST
 def rating(request, movie_pk):
@@ -83,6 +93,43 @@ def rating(request, movie_pk):
             rating.save()
             return redirect('movies:detail', movie_pk)
 
+
+@login_required
+def update_rating(request, rating_pk):
+    rating = get_object_or_404(Rating, pk=rating_pk)
+    movie_pk = rating.movie_id
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    ratings = movie.ratings.all()
+    if request.method == 'POST':
+        form = RatingForm(request.POST, instance=rating)
+        if form.is_valid():
+            form.save()
+            form = RatingForm()
+            context = {
+                'movie': movie,
+                'ratings': ratings,
+                'form': form,        
+            }
+    else: 
+        form = RatingForm()
+        updateform = RatingForm(instance=rating)
+        context = {
+            'movie': movie,
+            'ratings': ratings,
+            'form': form,   
+            'updateform': updateform, 
+            'rating_pk': rating_pk, 
+        }
+    return render(request, 'movies/detail.html', context)
+
+
+@require_POST
+def delete_rating(request, rating_pk):
+    rating = get_object_or_404(Rating, pk=rating_pk)
+    movie_pk = rating.movie_id
+    if rating.user == request.user:
+        rating.delete()
+    return redirect('movies:detail', movie_pk)
 
 
 def getmovies(request):

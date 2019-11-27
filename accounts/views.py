@@ -40,6 +40,7 @@ def logout(request):
     return redirect('movies:index')
 
 
+# 관리자 권한일때만 수정, 삭제 가능하다는 의미가 POST, login_required이면 되는지 확인하기 !
 @require_POST
 def delete(request):
     if request.user.is_authenticated:

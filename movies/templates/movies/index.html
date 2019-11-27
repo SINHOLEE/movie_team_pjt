@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
-{% block container %} 
-{% comment %} <a href="{% url 'movies:getmovies' %}">영화정보 받기</a>  {% endcomment %}
+{% block container %}
+{% comment %} superuser에 한해서 영화 등록, 수정, 삭제가 이루어져야 한다는 것 반영 {% endcomment %}
+{% if request.user.is_superuser  %}
+<a href="{% url 'movies:getmovies' %}">영화정보 받기(관리자 전용 버튼)</a> 
+{% endif %}
+{% comment %} 수정, 삭제까지는 어떻게 구현해야? {% endcomment %}
 
 {% if request.user.is_authenticated %}
     <p>로그인 됨</p>
-    {% if genres_length == 3 %}
+    {% if genres_length == 3%}
         <ul>
         {% for buk in bucket %}
             <li>
@@ -24,7 +28,6 @@
 {% else %}
     <p>로그인하세요</p>
 {% endif %}
-
 {% endblock container %} 
 
 
