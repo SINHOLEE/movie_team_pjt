@@ -43,12 +43,16 @@ Movie detail
 <hr>
 {% if user.is_authenticated %}
 {% if rating_pk == rating.pk %}
-<h2>평점을 등록해보세요</h2>
-<form method="post" action=" {% url 'movies:rating' movie.pk %} ">
-  {% csrf_token %}
-  {{form.as_p}}
-  <button type="submit">평점 등록 완료!</button>
-</form>
+{% if user in movie.rated_users.all %}
+     <p>이미등록</p>
+{% else %}
+    <h2>평점을 등록해보세요</h2>
+    <form method="post" action=" {% url 'movies:rating' movie.pk %} ">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">평점 등록 완료!</button>
+    </form>
+{% endif %}
 {% endif %}
 {% endif %}
 <hr>

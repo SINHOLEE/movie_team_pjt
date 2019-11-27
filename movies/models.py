@@ -38,6 +38,7 @@ class Movie(models.Model):
     director = models.ManyToManyField(Director,related_name='movies')
     description = models.TextField()
     liked_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_movies')
+    rated_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='rated_movies', through='Rating')
 
 class Rating(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ratings')

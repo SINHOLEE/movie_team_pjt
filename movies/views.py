@@ -86,12 +86,15 @@ def like(request, movie_pk):
 def rating(request, movie_pk):
     if request.user.is_authenticated:
         form = RatingForm(request.POST)
+    
         if form.is_valid():
             rating = form.save(commit=False)
             rating.movie_id = movie_pk
             rating.user = request.user
             rating.save()
-            return redirect('movies:detail', movie_pk)
+
+
+        return redirect('movies:detail', movie_pk)
 
 
 @login_required
