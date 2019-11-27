@@ -253,3 +253,7 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/venv,macos,python,django,windows,visualstudiocode
 
 .vscode
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
