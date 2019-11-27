@@ -12,12 +12,26 @@
     {% if genres_length == 3%}
         <ul>
         {% for buk in bucket %}
-            <li>
             {% for movie in buk %}
-            <a href=" {% url 'movies:detail' movie.pk %}  ">
-            {{movie.movieNm}}
-            <img src="{{ movie.poster_url }}" alt="사진">
+                {% if movie in movies %}
+                    {{ pass }}
+                {% else %}
+                    <p>{{ movie }}</p>
+                {% endif %}
             {% endfor %}
+            <li class='row mb-1'>
+               
+                {% for movie in buk %}
+                    {% if movie in movies %}
+                        <div class='card col-2'>
+                        <a href=" {% url 'movies:detail' movie.pk %}  ">
+                        {{movie.movieNm}}
+                        <br>
+                        <img src="{{ movie.poster_url }}" alt="사진">
+                        </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </li>
         {% endfor %}
         </ul>

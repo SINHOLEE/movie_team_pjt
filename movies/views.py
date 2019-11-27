@@ -26,16 +26,19 @@ def index(request):
             for i in range(3):
                 genre = genres[i]
                 cnt = 0
+                bucket[i].append(genre)
                 for movie in movies:
                     if genre in movie.genre.all():
                         bucket[i].append(movie)
                         cnt += 1
                     if cnt == 6:
                         break
+        pprint(bucket)
     else:
         bucket = []   
         genres = [1]
     context = {
+   
         'bucket' : bucket,
         'movies' : movies,
         'genres':genres,
