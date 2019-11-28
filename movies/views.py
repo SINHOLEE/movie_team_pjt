@@ -50,6 +50,7 @@ def index(request):
     return render(request, 'movies/index.html', context)
 
 
+
 @require_POST
 def get_like_genres(request):
     print(request.user)
@@ -91,6 +92,8 @@ def genres_change(request):
         for gn in my_genres:
             gn.liked_users.remove(user)
     return redirect('movies:index')
+        
+
 
 # detail에서는 로그인 해야 form이 보여져야 한다.
 @require_GET
@@ -110,6 +113,19 @@ def detail(request, movie_pk):
         'ratings':ratings,
     }
     return render(request, 'movies/detail.html', context)
+
+
+def movieby_genre(request, genre_pk):
+    genre = Genre.objects.get(pk=genre_pk)
+    print(genre.movies.all())
+    movies = Movie.objects.all()
+
+    context = {
+        'genre':genre,
+        'movies':movies,
+    }
+    return render(request, 'movies/movieby_genre.html', context)
+
 
 
 @login_required
