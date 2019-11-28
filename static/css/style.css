@@ -637,7 +637,6 @@ ul.pagination > li:hover > a {
 }
 
 .search_box {
-  background-image: url("../images/search_icon.png");
   background-position: 314px 15px;
   background-repeat: no-repeat;
   border-color: #DEDEDE;
