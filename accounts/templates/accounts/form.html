@@ -88,12 +88,11 @@
   <button class="bts btn-warning" style="submit">Submit</button>
 </form>
 
-  <form action=" {% url 'accounts:delete' %}" method="post">
-    {% csrf_token %}
-    <button class="bts btn-warning" style="submit">회원탈퇴</button>
-  </form>
+
+{% if request.resolver_match.url_name == 'update'%}
 
 <a href=" {% url 'accounts:password' %} ">****비밀번호 수정은 여기서!****</a>
+{% endif %}
 <br>
   </div>
 

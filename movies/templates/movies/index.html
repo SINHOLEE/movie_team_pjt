@@ -180,10 +180,14 @@
 {% else %}
     <div class="start-background wow fadeIn" data-wow-offset="0" data-wow-delay="0.1s" data-wow-duration="3s"  >
     <a href="{% url 'accounts:login' %}">
+    <button class="bts btn-danger" style="submit">
   로그인하기
+    </button>
 </a>
 <a href="{% url 'accounts:signup' %}">
+    <button class="bts btn-secondary" style="submit">
   회원가입
+  </button>
 </a>
 </div>
 {% endif %}

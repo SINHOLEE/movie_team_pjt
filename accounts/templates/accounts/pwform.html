@@ -77,12 +77,12 @@
 <form method="post">
   {% csrf_token %}
   {{form.as_p}}
-  <button type="submit">Submit</button>
+  <button class="bts btn-warning" style="submit">Submit</button>
 </form>
 
   <form action=" {% url 'accounts:delete' %}" method="post">
     {% csrf_token %}
-    <button type="submit">회원탈퇴</button>
+    <button class="bts btn-warning" style="submit">회원탈퇴</button>
   </form>
 </div>
 
