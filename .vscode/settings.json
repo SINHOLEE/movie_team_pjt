@@ -1,5 +1,6 @@
 {
-    "python.pythonPath": "venv3/bin/python",
+    "python.pythonPath": "venv\\Scripts\\python.exe",
+
     "files.associations": {
         "**/*.html": "django-html",
         "**/templates/*": "django-txt",

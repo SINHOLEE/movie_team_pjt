@@ -108,7 +108,7 @@
 <a href="{% url 'movies:getmovies' %}">영화정보 받기(관리자 전용 버튼)</a> 
 {% endif %}
 {% comment %} 수정, 삭제까지는 어떻게 구현해야? {% endcomment %}
-
+<div id="app">
 {% if request.user.is_authenticated %}
 
 
@@ -175,11 +175,8 @@
         </div>
         <button type="submit" class="btn btn-primary">등록</button>
         </form>
-
     {% endif %}
     
-    
-{% else %}
 {% endif %}
 
 

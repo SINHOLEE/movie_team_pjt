@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  {% comment %} CSS {% endcomment %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  {% comment %} FontAwesome {% endcomment %}
+  <script src="https://kit.fontawesome.com/dcc481b48a.js" crossorigin="anonymous"></script>
+  {% comment %} Axios {% endcomment %}
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  {% comment %} vuecdn {% endcomment %}
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <title>{% block title %}{% endblock title %}</title>
+</head>
+<body>
+  <header class="container">
+    <h1>영화추천사이트</h1>
+    {% comment %} user는 template이 기본적으로 가지고 있는 정보 {% endcomment %}
+    {% comment %} 로그인까지 구현할 수 있게 {% endcomment %}
+    
+
+    {% if user.is_authenticated %}
+    {% comment %} 로그인이 되어있는상태라면 아래가 보일것 {% endcomment %}
+    <p>
+      <span>Hello, {{ user.username }}</span>
+      <a href=" {% url 'accounts:logout' %} ">로그아웃</a>
+      <a href=" {% url 'accounts:update' %} ">회원정보 수정</a>
+    </p>
+    {% comment %}  {% endcomment %}
+    {% else %}
+    <p>
+      <a href=" {% url 'accounts:login' %} ">로그인</a>
+      <a href="{% url 'accounts:signup' %}">회원가입</a>
+    </p>
+    {% endif %}
+
+    <a href=" {% url 'movies:index'%} ">Home</a>
+
+    {% if request.user.is_authenticated %}
+    <form action="{% url 'movies:genres_change' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">선호 장르 바꾸기</button>
+    </form>
+    
+    {% endif %}
+    <hr>
+  </header>
+  <div class="container">
+  {% block container %}{% endblock container %}  
+  </div>
+
+
+  <!-- Footer -->
+  <nav class="navbar fixed-bottom navbar-light bg-secondary">
+    <a class="navbar-brand" href="#"></a>
+      <!-- 회원탈퇴 -->
+      <form action=" {% url 'accounts:delete' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">회원탈퇴</button>
+      </form>
+    </div>
+    <!-- Copyright -->
+  </nav>
+  <!-- Footer -->
+
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>
