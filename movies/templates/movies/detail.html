@@ -23,7 +23,7 @@
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
   <title>Movie detail</title>
 </head>
-<body>
+<body style="background-color:#ffeee6">
   <header>
 
 
@@ -46,10 +46,15 @@
             <div class="menu">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"><a href=" {% url 'movies:index' %} " class="active">Home</a></li>
-                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
+                {% if user.is_authenticated %}
                 <li role="presentation"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                <li role="presentation"><a href="{% url 'accounts:update' %}">Edit</a></li>
+                {% else %}
+                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
                 <li role="presentation"><a href="{% url 'accounts:signup' %}" >Signup</a></li>
-                <li role="presentation"><a href="{% url 'accounts:delete' %}">Signout</a></li>
+                {% endif %}
+
+
               </ul>
             </div>
           </div>
@@ -60,39 +65,48 @@
   </header>
   
 
+<div class="container">
+  <div class="container" style="width:70%; float:left; margin-right:30px; background-color:#fffaf7; ">
+      <a href="#"><img class="img-responsive img-blog" style="margin:auto"src="{{movie.poster_url}}" alt="{{movie.movieNm}}" width="50%"/></a>
+      <br>
+      <br>
+      <h2>{{movie.movieNm}}</h2>
+      <p style="color:black">{{movie.description}}</p>
+      <a class="btn btn-primary readmore" href="{{movie.link_url}}">영화 사이트 바로가기 <i class="fa fa-angle-right"></i></a>
+</div>
 
-            <div class="container">
-              <div class="col-sm-12 col-sm-9 blog-content">
-                <a href="#"><img class="img-responsive img-blog" src="{{movie.poster_url}}" alt="{{movie.movieNm}}" width="50%"/></a>
-                <br>
-                <br>
-                <h2>{{movie.movieNm}}</h2>
-                <p style="color:black">{{movie.description}}</p>
-                <a class="btn btn-primary readmore" href="{{movie.link_url}}">영화 사이트 바로가기 <i class="fa fa-angle-right"></i></a>
-              </div>
-            </div>
-
-
-{% comment %} 
-<img src="{{movie.poster_url}}" alt="{{movie.movieNm}}">
-<h2 style="color:black">영화명: {{movie.movieNm}}</h2>
-<p style="color:black">{{movie.description}}</p>
-<br> {% endcomment %}
-<h4 >장르</h4>
-{% for genre in genres %}
-<p style="color:black">{{genre}} </p>
-{% endfor %}
-<h4>참여 배우들</h4>
-{% for actor in actors %}
-<p style="color:black">{{actor}}</p>
-{% endfor %}
-<h4>감독</h4>
-<p style="color:black">{{director}}</p>
-
+<div class="container" style="width:25%; float:right;">
+  <div>
+  <h4 >Genre</h4>
+  {% for genre in genres %}
+  <p style="color:black">{{genre}} </p>
+  {% endfor %}
+  <h4>Actors</h4>
+  {% for actor in actors %}
+  <p style="color:black">{{actor}}</p>
+  {% endfor %}
+  <h4>Directors</h4>
+  <p style="color:black">{{director}}</p>
+    </div>
+</div>
 {% comment %} 좋아요 기능 구현 {% endcomment %}
 {% comment %} ajax를 활용한 비동기적 구현 {% endcomment %}
 
 <div class="rating">
+
+<div style="background-color:#ffd1b3; width:25%;  float:right; margin-left:25px"  >
+
+    {% if user in movie.rated_users.all %}
+      {{pass}}
+    {% else %}
+    <h4 style="color:black">평점을 등록해보세요!</h4>
+    <form method="post" action=" {% url 'movies:rating' movie.pk %} " style="text/css:black">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" style="color:black">평점 등록 완료!</button>
+    </form>
+    {% endif %}
+
 
 <i 
   class="{% if user in movie.liked_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg" 
@@ -103,48 +117,17 @@
 </i>
 
 <p style="color:black" ><span id="like-count"> {{movie.liked_users.all | length }}</span>명이 이 영화를 좋아합니다.</p>
-
-
-
-{% if user.is_authenticated %}
-{% if rating_pk == rating.pk %}
-{% if user in movie.rated_users.all %}
-     <h2> </h2>
-{% else %}
-
-    <br>
-    <br>
-    <br>
-    <br>
-<div style="background-color:#ffd1b3; width:50%; height: 285px; margin:auto;" class="col-sm-12 col-sm-9 blog-content">
-    <h4 style="color:black">평점을 등록해보세요!</h4>
-    <form method="post" action=" {% url 'movies:rating' movie.pk %} " style="text/css:black">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit" style="color:black">평점 등록 완료!</button>
-    </form>
     
-{% endif %}
-{% endif %}
-{% endif %}
+    
 
 
-
-<p style="color:black">
 {% for rating in ratings %}
-  {{rating.score}} 
-  {{rating.comment}}
-  {{rating.user}}
-  {{rating.created_at}}
-</p>
+  <h5>{{rating.user}}님이 {{rating.score}}점을 주셨네요! </h5>
+  <h6>작성내용: {{rating.comment}}</h5>
 
-  {% comment %} 수정할 review 만 form 으로 바꿈 {% endcomment %}
-  
   {% if user.is_authenticated %}
-
-  
   {% if rating_pk == rating.pk %}
-    <form action="{% url 'movies:update_rating' rating.pk %}" method="POST">
+    <form action="{% url 'movies:update_rating' rating.pk %}" method="POST" style="display:inline-block">
       {% csrf_token %}
       {{ updateform.as_p }}
       <button type="submit" style="color:black">수정</button>
@@ -152,19 +135,24 @@
     {% else %}
 
     {% if rating.user == rating.user %}
-      <form action="{% url 'movies:delete_rating' rating.pk %}" method="POST">
+      <div>
+      <form action="{% url 'movies:delete_rating' rating.pk %}" method="POST" style="display:inline-block">
         {% csrf_token %}
         <button type="submit"  style="color:black">삭제</button>
       </form>
-      <form action="{% url 'movies:update_rating' rating.pk %}">
+      <form action="{% url 'movies:update_rating' rating.pk %}" style="display:inline-block">
         <button type="submit"  style="color:black">수정</button>
       </form>
+      </div>
       <br>
       <br>
     {% endif %}
   {% endif %}
   {% endif %}
+</span>
 {% endfor %}
+
+</div>
 </div>
 </div>
 <script>

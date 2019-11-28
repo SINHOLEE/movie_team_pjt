@@ -1071,3 +1071,8 @@ a.scrollup:hover{
 	background-color:#ED502E;
 	color:#fff;;	
 }
+
+.account-div {
+  display:flex; 
+  justify-content:center !important;
+}
