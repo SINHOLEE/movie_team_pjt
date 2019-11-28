@@ -114,17 +114,17 @@ def detail(request, movie_pk):
     }
     return render(request, 'movies/detail.html', context)
 
-
 def movieby_genre(request, genre_pk):
     genre = Genre.objects.get(pk=genre_pk)
     print(genre.movies.all())
-    movies = Movie.objects.all()
-
+    movies = genre.movies.all()
+    print(movies)
     context = {
         'genre':genre,
         'movies':movies,
     }
     return render(request, 'movies/movieby_genre.html', context)
+
 
 
 

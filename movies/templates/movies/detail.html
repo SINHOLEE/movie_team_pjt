@@ -61,8 +61,7 @@
   
 
 
-
-<div class="container">
+            <div class="container">
               <div class="col-sm-12 col-sm-9 blog-content">
                 <a href="#"><img class="img-responsive img-blog" src="{{movie.poster_url}}" alt="{{movie.movieNm}}" width="50%"/></a>
                 <br>
@@ -71,7 +70,7 @@
                 <p style="color:black">{{movie.description}}</p>
                 <a class="btn btn-primary readmore" href="{{movie.link_url}}">영화 사이트 바로가기 <i class="fa fa-angle-right"></i></a>
               </div>
-
+            </div>
 
 
 {% comment %} 
@@ -117,12 +116,14 @@
     <br>
     <br>
     <br>
+<div style="background-color:#ffd1b3; width:50%; height: 285px; margin:auto;" class="col-sm-12 col-sm-9 blog-content">
     <h4 style="color:black">평점을 등록해보세요!</h4>
     <form method="post" action=" {% url 'movies:rating' movie.pk %} " style="text/css:black">
     {% csrf_token %}
     {{form.as_p}}
     <button type="submit" style="color:black">평점 등록 완료!</button>
     </form>
+    
 {% endif %}
 {% endif %}
 {% endif %}
@@ -165,7 +166,7 @@
   {% endif %}
 {% endfor %}
 </div>
-
+</div>
 <script>
   const likeButton = document.querySelector('#like-btn')
   likeButton.addEventListener('click', function(event) {
