@@ -1,13 +1,126 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/dcc481b48a.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-{% block container %}
-{% comment %} superuser에 한해서 영화 등록, 수정, 삭제가 이루어져야 한다는 것 반영 {% endcomment %}
+
+  <!-- Bootstrap -->
+  {% comment %} {% static '/css/style.css' %} {% endcomment %}
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.bxslider.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/isotope.css' %}" media="screen" />
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <link rel="stylesheet" href=" {% static 'js/fancybox/jquery.fancybox.css' %}" type="text/css" media="screen" />
+  <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+
+
+
+  <title>index</title>
+</head>
+<body>
+  <header>
+
+
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse.collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+            <div class="navbar-brand">
+              <a href="index.html"><h1><span>L</span>ike<span>M</span>ovie</h1></a>
+            </div>
+          </div>
+
+          <div class="navbar-collapse collapse">
+            <div class="menu">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href=" {% url 'movies:index' %} " class="active">Home</a></li>
+                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
+                <li role="presentation"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                <li role="presentation"><a href="{% url 'accounts:signup' %}" >Signup</a></li>
+                <li role="presentation"><a href="{% url 'accounts:delete' %}">Signout</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+  </header>
+
+
+
+
+  <section id="portfolio">
+    <div class="container">
+      <div class="col-lg-12">
+        <div class="text-center">
+          <div class="wow bounceInDown" data-wow-offset="0" data-wow-delay="0.3s">
+            <h2>영화같은 일상을 꿈꾸는 당신께</h2>
+          </div>
+          <div class="wow bounceInDown" data-wow-offset="0" data-wow-delay="0.6s">
+            <h4>맞춤형 영화를 추천해드립니다.</h4>
+          </div>
+        </div>
+
+
+
+    <h1>영화추천사이트</h1>
+    {% if user.is_authenticated %}
+    <p>
+      <span>Hello, {{ user.username }}</span>
+      <a href=" {% url 'accounts:logout' %} ">로그아웃</a>
+      <a href=" {% url 'accounts:update' %} ">회원정보 수정</a>
+    </p>
+    {% else %}
+    <p>
+      <a href=" {% url 'accounts:login' %} ">로그인</a>
+      <a href="{% url 'accounts:signup' %}">회원가입</a>
+    </p>
+    {% endif %}
+
+    <a href=" {% url 'movies:index'%} ">Home</a>
+    <hr>
+  </header>
+  
+  <div class="container">
+  {% comment %} superuser에 한해서 영화 등록, 수정, 삭제가 이루어져야 한다는 것 반영 {% endcomment %}
 {% if request.user.is_superuser  %}
 <a href="{% url 'movies:getmovies' %}">영화정보 받기(관리자 전용 버튼)</a> 
 {% endif %}
 {% comment %} 수정, 삭제까지는 어떻게 구현해야? {% endcomment %}
 <div id="app">
 {% if request.user.is_authenticated %}
+    <p>로그인 됨</p>
+
+
+    <div id="app" style="margin:0 auto">
+        <select v-model="selected" style="color:black">
+            <option v-for="option in options" v-bind:value="option.value"> 
+                [[ option.text ]]
+            </option>
+        </select>
+        {% comment %} <span>Selected: [[ selected ]]</span> {% endcomment %}
+        <a :href="`movieby_genre/${selected}`"> [장르 선택 완료!] </a>
+        <hr>
+    </div> 
+
+
     {% if genres_length == 3%}
         <ul>
         {% for buk in bucket %}
@@ -18,23 +131,58 @@
                     <p>{{ movie }}</p>
                 {% endif %}
             {% endfor %}
-            <li class='row mb-1'>
+            <li class='row'>
                
                 {% for movie in buk %}
                     {% if movie in movies %}
-                        <div class='card col-2'>
-                        <a href=" {% url 'movies:detail' movie.pk %}  ">
-                        {{movie.movieNm}}
-                        <br>
-                        <img src="{{ movie.poster_url }}" alt="사진">
-                        </a>
-                        </div>
+
+<div class="card" style="width: 18rem;">
+  <img src="{{ movie.poster_url }}" class="card-img-top" alt="사진">
+  <div class="card-body">
+    <h6 class="card-title text-center">{{movie.movieNm}}</h6>
+    {% comment %} <p class="card-text">{{movie.description}}</p> {% endcomment %}
+    {% comment %} <a class="preview" href="  {% url 'movies:detail' movie.pk %}   " rel="prettyPhoto" data-target="#{{movie.pk}}" ><i class="fa fa-eye"></i> View {% endcomment %}
+    {% comment %} <a class="preview" href="#{{movie.pk}}" rel="prettyPhoto" data-target="#{{movie.pk}}" ><i class="fa fa-eye"></i> View {% endcomment %}
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#movie-{{movie.pk}}">
+          Launch demo modal
+        </button> 
+
+        <!-- Modal -->
+        <div class="modal fade" id="movie-{{movie.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+
+  </div>
+</div>
+
+
                     {% endif %}
                 {% endfor %}
             </li>
         {% endfor %}
         </ul>
+    
     {% else %}
+
         <P>선호하는 장르를 선택해 주세요 꼭! 3가지 종류를 선택하시고, 중복선택을 지양해 주세요</P>
 
         <form action="{% url 'movies:get_like_genres' %}" method="POST" >
@@ -57,19 +205,76 @@
     {% endif %}
     
 {% endif %}
-    
 
-</div>
+
 <script>
-    const app = new Vue({
-        delimiters: ['[[', ']]'],
-        el: '#app',
-        data: {
-            message: '1123',
-            genres: [],
-        }
-        computed: {
-        }
+    new Vue({
+    delimiters: ['[[', ']]'],
+    el: '#app',
+    data: {
+        selected: '16',
+        options: [
+        { text: '애니메이션', value: '1' },
+        { text: '범죄', value: '2' },
+        { text: '드라마', value: '3' },
+        { text: '액션', value: '4' },
+        { text: '어드벤처', value: '5' },
+        { text: 'SF', value: '6' },
+        { text: '스릴러', value: '7' },
+        { text: '판타지', value: '8' },
+        { text: '멜로/로맨스', value: '9' },
+        { text: '코미디', value: '10' },
+        { text: '공포(호러)', value: '11' },
+        { text: '가족', value: '12' },
+        { text: '전쟁', value: '13' },
+        { text: '미스터리', value: '14' },
+        { text: '사극', value: '15' },
+        { text: '기타', value: '16' },
+        { text: '다큐멘터리', value: '17' },
+        { text: '뮤지컬', value: '18' },
+        ],
+    }
     })
 </script>
-{% endblock container %} 
+
+  </div>
+
+
+
+  <footer>
+    <div class="footer">
+      <div>
+        <div class="col-md-4 wow fadeInUp" data-wow-offset="0" data-wow-delay="0.2s">
+          <h2>Multi</h2>
+          <p>In a elit in lorem congue varius. Sed nec arcu. Etiam sit amet augue. Fusce fermen tum neque a rutrum varius odio pede ullamcorp-er tellus ut dignissim nisi risus non tortor. Aliquam mollis neque.</p>
+        </div>
+      </div>
+    </div>
+
+  </footer>
+
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/wow.min.js' %}"></script>
+  <script src="{% static 'js/fancybox/jquery.fancybox.pack.js' %}"></script>
+  <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+  <script src="{% static 'js/jquery.bxslider.min.js' %}"></script>
+  <script src="{% static 'js/jquery.prettyPhoto.js' %}"></script>
+  <script src="{% static 'js/jquery.isotope.min.js' %}"></script>
+  <script src="{% static 'js/functions.js' %}"></script>
+  <script>
+    wow = new WOW({}).init();
+  </script>
+
+
+
+</body>
+</html>

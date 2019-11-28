@@ -1,14 +1,37 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/dcc481b48a.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>Movie detail</title>
+</head>
+<body>
+  <header class="container">
+    <h1>영화추천사이트</h1>
+    {% if user.is_authenticated %}
+    <p>
+      <span>Hello, {{ user.username }}</span>
+      <a href=" {% url 'accounts:logout' %} ">로그아웃</a>
+      <a href=" {% url 'accounts:update' %} ">회원정보 수정</a>
+    </p>
+    {% else %}
+    <p>
+      <a href=" {% url 'accounts:login' %} ">로그인</a>
+      <a href="{% url 'accounts:signup' %}">회원가입</a>
+    </p>
+    {% endif %}
 
-{% block title %}
-Movie detail
-{% endblock title %}
-
-
-
-{% block container %}
-{% comment %} 영화상세정보 {% endcomment %}
-<img src="{{movie.poster_url}}" alt="{{movie.movieNm}}">
+    <a href=" {% url 'movies:index'%} ">Home</a>
+    <hr>
+  </header>
+  
+  <div class="container">
+  <img src="{{movie.poster_url}}" alt="{{movie.movieNm}}">
 <h2>영화명: {{movie.movieNm}}</h2>
 <p>{{movie.description}}</p>
 <br>
@@ -37,9 +60,6 @@ Movie detail
 
 
 
-
-{% comment %} 로그인 처리한거 파트 두개 주의하기!!!!!!!!! {% endcomment %}
-{% comment %} 로그인 해야됨 + 수정할때는 보이지 않아야 한다는것 주의!!!!! {% endcomment %}
 <hr>
 {% if user.is_authenticated %}
 {% if rating_pk == rating.pk %}
@@ -56,8 +76,6 @@ Movie detail
 {% endif %}
 {% endif %}
 <hr>
-
-
 
 
 
@@ -80,9 +98,6 @@ Movie detail
     </form>
     {% else %}
 
-    {% comment %} review 는 모든 사람한테 보임 {% endcomment %}
-    {% comment %} <p>{{ rating.pk }}. {{ rating.content }} {{ rating.score }}</p> {% endcomment %}
-    {% comment %} delete 랑 수정하기는 review 쓴 사람한테만 보임 {% endcomment %}
     {% if rating.user == rating.user %}
       <form action="{% url 'movies:delete_rating' rating.pk %}" method="POST">
         {% csrf_token %}
@@ -95,36 +110,17 @@ Movie detail
       <br>
     {% endif %}
   {% endif %}
-
   {% endif %}
-
-
 {% endfor %}
-
-{% comment %} review 추가는 로그인한 모든 사람에게 보임 {% endcomment %}
-{% comment %} {% if user.is_authenticated %}
-<form action="{% url 'movies:rating' movie.pk %}" method="POST">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">rating Create</button>
-</form>
-{% endif %} {% endcomment %}
-{% comment %} review 끝 {% endcomment %}
-
 
 
 <script>
   const likeButton = document.querySelector('#like-btn')
   likeButton.addEventListener('click', function(event) {
-    // console.log(event)
-    // Button 의 data-id 속성을 아래 코드로 가지고 온다.
     const movieId = event.target.dataset.id
     axios.get(`/movies/${movieId}/like/`)
       .then(function(response) {
-        //console.log(response)
-        //사용자의 좋아요 상태에 따라 버튼 클래스 변경
         if (response.data.liked) {
-          //console.log(likeButton.classList)
           likeButton.classList.remove('far')
           likeButton.classList.add('fas')
         
@@ -133,26 +129,26 @@ Movie detail
           likeButton.classList.remove('fas')
           likeButton.classList.add('far')
         }
-        // 아티클을 좋아하는 사람들 수를 응답받아 적용시킴
         const likeCount = document.querySelector('#like-count')
         likeCount.innerText = response.data.count
       })
   })
 </script>
+  
+  </div>
 
 
+  <form action=" {% url 'accounts:delete' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">회원탈퇴</button>
+  </form>
 
 
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>
 
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-{% endblock container %}
