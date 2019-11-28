@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,56 +9,117 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://kit.fontawesome.com/dcc481b48a.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <title>Accounts</title>
-</head>
-<body>
-  <header class="container">
-    <h1>영화추천사이트</h1>
-    {% if user.is_authenticated %}
-    <p>
-      <span>Hello, {{ user.username }}</span>
-      <a href=" {% url 'accounts:logout' %} ">로그아웃</a>
-      <a href=" {% url 'accounts:update' %} ">회원정보 수정</a>
-    </p>
-    {% else %}
-    <p>
-      <a href=" {% url 'accounts:login' %} ">로그인</a>
-      <a href="{% url 'accounts:signup' %}">회원가입</a>
-    </p>
-    {% endif %}
 
-    <a href=" {% url 'movies:index'%} ">Home</a>
-    <hr>
+
+  <!-- Bootstrap -->
+  {% comment %} {% static '/css/style.css' %} {% endcomment %}
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.bxslider.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/isotope.css' %}" media="screen" />
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <link rel="stylesheet" href=" {% static 'js/fancybox/jquery.fancybox.css' %}" type="text/css" media="screen" />
+  <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+
+  <title>index</title>
+</head>
+<body style="background-color:#ffeee6">
+  <header>
+
+
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse.collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+            <div class="navbar-brand">
+              <a href=" {% url 'movies:index' %}  "><h1><span>L</span>ike<span>M</span>ovie</h1></a>
+            </div>
+          </div>
+
+          <div class="navbar-collapse collapse">
+            <div class="menu">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href=" {% url 'movies:index' %} " class="active">Home</a></li>
+
+
+
+                {% if user.is_authenticated %}
+                <li role="presentation"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                <li role="presentation"><a href="{% url 'accounts:update' %}">Edit</a></li>
+                {% else %}
+                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
+                <li role="presentation"><a href="{% url 'accounts:signup' %}" >Signup</a></li>
+                {% endif %}
+
+
+              
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
   </header>
-  
+
+<div class="account-div">
 
 {% comment %} 현재의 url 이름을 확인 {% endcomment %}
 {% if request.resolver_match.url_name == 'signup' %}
-<h2>회원가입</h2>
 {% elif request.resolver_match.url_name == 'login' %}
-<h2>로그인</h2>
 {% elif request.resolver_match.url_name == 'update'%}
-<h2>내 정보 수정</h2>
-<a href=" {% url 'accounts:password' %} ">****비밀번호 수정은 여기서!****</a>
-{% else %}
-<h2>비밀번호 변경</h2>
-{% endif %}
 
+{% else %}
+{% endif %}
+<br>
+
+<div>
 <form method="post">
   {% csrf_token %}
   {{form.as_p}}
-  <button type="submit">Submit</button>
+  <button class="bts btn-warning" style="submit">Submit</button>
 </form>
 
   <form action=" {% url 'accounts:delete' %}" method="post">
     {% csrf_token %}
-    <button type="submit">회원탈퇴</button>
+    <button class="bts btn-warning" style="submit">회원탈퇴</button>
   </form>
+
+<a href=" {% url 'accounts:password' %} ">****비밀번호 수정은 여기서!****</a>
+<br>
+  </div>
+
+</div>
 
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/wow.min.js' %}"></script>
+  <script src="{% static 'js/fancybox/jquery.fancybox.pack.js' %}"></script>
+  <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+  <script src="{% static 'js/jquery.bxslider.min.js' %}"></script>
+  <script src="{% static 'js/jquery.prettyPhoto.js' %}"></script>
+  <script src="{% static 'js/jquery.isotope.min.js' %}"></script>
+  <script src="{% static 'js/functions.js' %}"></script>
+  <script>
+    wow = new WOW({}).init();
+  </script>
+
+
 
 </body>
 </html>

@@ -164,17 +164,14 @@ def update_rating(request, rating_pk):
     rating = get_object_or_404(Rating, pk=rating_pk)
     movie_pk = rating.movie_id
     movie = get_object_or_404(Movie, pk=movie_pk)
+    print('movie', movie)
+    print('movie_nm',movie.movieNm)
     ratings = movie.ratings.all()
     if request.method == 'POST':
         form = RatingForm(request.POST, instance=rating)
         if form.is_valid():
             form.save()
-            form = RatingForm()
-            context = {
-                'movie': movie,
-                'ratings': ratings,
-                'form': form,        
-            }
+            return redirect('movies:detail', movie_pk)
     else: 
         form = RatingForm()
         updateform = RatingForm(instance=rating)
