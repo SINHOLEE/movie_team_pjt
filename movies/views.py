@@ -199,7 +199,6 @@ def delete_rating(request, rating_pk):
 
 def getmovies(request):
     cover = {}
-    embed()
     return
     for i in range(10):
         targetDt = datetime(2019, 11, 21) - timedelta(weeks = i )
@@ -427,7 +426,6 @@ def getmovies(request):
             
             movie.save()
             directors = Director.objects.filter(director_cd=director_cd)
-            # embed()
             print('actor_list', actor_lis)
             for actorCd in actor_lis:
                 print('actor_code', actorCd)
