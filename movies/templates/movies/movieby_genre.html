@@ -51,11 +51,14 @@
 
 
 
-                
-                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
+                {% if user.is_authenticated %}
                 <li role="presentation"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                <li role="presentation"><a href="{% url 'accounts:update' %}">Edit</a></li>
+                {% else %}
+                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
                 <li role="presentation"><a href="{% url 'accounts:signup' %}" >Signup</a></li>
-                <li role="presentation"><a href="{% url 'accounts:delete' %}">Signout</a></li>
+                {% endif %}
+
               </ul>
             </div>
           </div>
@@ -82,22 +85,7 @@
 
 
 
-    <h1>영화추천사이트</h1>
-    {% if user.is_authenticated %}
-    <p>
-      <span>Hello, {{ user.username }}</span>
-      <a href=" {% url 'accounts:logout' %} ">로그아웃</a>
-      <a href=" {% url 'accounts:update' %} ">회원정보 수정</a>
-    </p>
-    {% else %}
-    <p>
-      <a href=" {% url 'accounts:login' %} ">로그인</a>
-      <a href="{% url 'accounts:signup' %}">회원가입</a>
-    </p>
-    {% endif %}
-
-    <a href=" {% url 'movies:index'%} ">Home</a>
-    <hr>
+  
   </header>
   
     <div class="container">
@@ -112,7 +100,7 @@
         <hr>
     </div> 
 
-    <h1>{{genre}}를 검색하셨네요!</h1>
+    <h1 style="color:black">{{genre}}를(을) 검색하셨네요!</h1>
     <div class="row">
     {% for movie in movies  %}
         
@@ -132,19 +120,6 @@
     {% endfor %}
     </div>
   </div>
-
-  <footer>
-    <div class="footer">
-      <div>
-        <div class="col-md-4 wow fadeInUp" data-wow-offset="0" data-wow-delay="0.2s">
-          <h2>Multi</h2>
-          <p>In a elit in lorem congue varius. Sed nec arcu. Etiam sit amet augue. Fusce fermen tum neque a rutrum varius odio pede ullamcorp-er tellus ut dignissim nisi risus non tortor. Aliquam mollis neque.</p>
-        </div>
-      </div>
-    </div>
-
-  </footer>
-
 
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

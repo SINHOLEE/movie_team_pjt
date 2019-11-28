@@ -51,11 +51,16 @@
 
 
 
-                
-                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
+                {% if user.is_authenticated %}
                 <li role="presentation"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                <li role="presentation"><a href="{% url 'accounts:update' %}">Edit</a></li>
+                {% else %}
+                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
                 <li role="presentation"><a href="{% url 'accounts:signup' %}" >Signup</a></li>
-                <li role="presentation"><a href="{% url 'accounts:delete' %}">Signout</a></li>
+                {% endif %}
+
+
+              
               </ul>
             </div>
           </div>
@@ -73,7 +78,12 @@
       <div class="col-lg-12">
         <div class="text-center">
           <div class="wow bounceInDown" data-wow-offset="0" data-wow-delay="0.3s">
+            {% if user.is_authenticated %}
+            <h2>영화같은 일상을 꿈꾸는 {{user.username}}님께</h2>
+            {% else %}
             <h2>영화같은 일상을 꿈꾸는 당신께</h2>
+            {% endif %}
+            
           </div>
           <div class="wow bounceInDown" data-wow-offset="0" data-wow-delay="0.6s">
             <h4>맞춤형 영화를 추천해드립니다.</h4>
@@ -82,24 +92,16 @@
 
 
 
-    <h1>영화추천사이트</h1>
-    {% if user.is_authenticated %}
-    <p>
-      <span>Hello, {{ user.username }}</span>
-      <a href=" {% url 'accounts:logout' %} ">로그아웃</a>
-      <a href=" {% url 'accounts:update' %} ">회원정보 수정</a>
-    </p>
-    {% else %}
-    <p>
-      <a href=" {% url 'accounts:login' %} ">로그인</a>
-      <a href="{% url 'accounts:signup' %}">회원가입</a>
-    </p>
-    {% endif %}
-
-    <a href=" {% url 'movies:index'%} ">Home</a>
-    <hr>
   </header>
   
+
+
+
+
+
+
+
+
   <div class="container">
   {% comment %} superuser에 한해서 영화 등록, 수정, 삭제가 이루어져야 한다는 것 반영 {% endcomment %}
 {% if request.user.is_superuser  %}
@@ -108,7 +110,6 @@
 {% comment %} 수정, 삭제까지는 어떻게 구현해야? {% endcomment %}
 <div id="app">
 {% if request.user.is_authenticated %}
-    <p>로그인 됨</p>
 
 
     <div id="app" style="margin:0 auto">
@@ -124,7 +125,6 @@
 
 
     {% if genres_length == 3%}
-        <ul>
         {% for buk in bucket %}
             {% for movie in buk %}
                 {% if movie in movies %}
@@ -148,12 +148,11 @@
                                   </a> {% endcomment %}
                                   </a>
                                 </div>
-</div>
+                            </div>
                     {% endif %}
                 {% endfor %}
             </li>
         {% endfor %}
-        </ul>
     
     {% else %}
 
@@ -213,17 +212,6 @@
 
   </div>
 
-  <footer>
-    <div class="footer">
-      <div>
-        <div class="col-md-4 wow fadeInUp" data-wow-offset="0" data-wow-delay="0.2s">
-          <h2>Multi</h2>
-          <p>In a elit in lorem congue varius. Sed nec arcu. Etiam sit amet augue. Fusce fermen tum neque a rutrum varius odio pede ullamcorp-er tellus ut dignissim nisi risus non tortor. Aliquam mollis neque.</p>
-        </div>
-      </div>
-    </div>
-
-  </footer>
 
 
 
