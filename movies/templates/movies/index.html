@@ -24,6 +24,7 @@
 
 
   <title>index</title>
+
 </head>
 <body style="background-color:#ffeee6">
   <header>
@@ -176,9 +177,16 @@
         <button type="submit" class="btn btn-primary">등록</button>
         </form>
     {% endif %}
-    
+{% else %}
+    <div class="start-background wow fadeIn" data-wow-offset="0" data-wow-delay="0.1s" data-wow-duration="3s"  >
+    <a href="{% url 'accounts:login' %}">
+  로그인하기
+</a>
+<a href="{% url 'accounts:signup' %}">
+  회원가입
+</a>
+</div>
 {% endif %}
-
 
 <script>
     new Vue({

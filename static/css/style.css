@@ -1072,7 +1072,19 @@ a.scrollup:hover{
 	color:#fff;;	
 }
 
+
 .account-div {
   display:flex; 
   justify-content:center !important;
 }
+
+div.start-background {
+  background-color: transparent;
+  background-image: url(../images/—Pngtree—beautiful\ flower\ petals\ falling_23631.png) ;
+  min-height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
