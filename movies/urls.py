@@ -11,4 +11,6 @@ urlpatterns = [
     path('<int:rating_pk>/delete/', views.delete_rating, name='delete_rating'),
     path('movieby_genre/<int:genre_pk>/', views.movieby_genre, name='movieby_genre'),
     path('getmovies/', views.getmovies, name='getmovies'),
+    path('get_like_genres/', views.get_like_genres, name='get_like_genres'),
+    path('genres_like_change/', views.genres_change, name='genres_change'),
 ]

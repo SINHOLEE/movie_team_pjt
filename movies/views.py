@@ -50,6 +50,7 @@ def index(request):
     return render(request, 'movies/index.html', context)
 
 
+
 @require_POST
 def get_like_genres(request):
     print(request.user)
@@ -59,23 +60,37 @@ def get_like_genres(request):
     flag = True
     new_set = set()
     for gn in genres:
-        if gn not in new_set and gn != '':
-            new_set.add(gn)
+        if request.POST.get(gn) not in new_set and request.POST.get(gn) != '':
+            print('gn', gn)
+            print('new_set', new_set)
+            new_set.add(request.POST.get(gn))
         else:
             flag = False
             break
     if flag:
         for genre_item in genres:
-            print('genre_item', genre_item)
+            # print('genre_item', genre_item)
             # print(request.POST)
-            print(request.POST.get(genre_item))
+            # print(request.POST.get(genre_item))
             genre = Genre.objects.filter(genreNm=request.POST.get(genre_item).strip()).first()
-            print('genre',genre)
+            # print('genre',genre)
             user.liked_genres.add(genre)
 
     else:
         pass 
         # 예외처리를 해야하는데...
+    return redirect('movies:index')
+        
+
+@require_POST
+def genres_change(request):
+    
+    user = request.user
+    if user.is_authenticated:
+
+        my_genres = user.liked_genres.all()
+        for gn in my_genres:
+            gn.liked_users.remove(user)
     return redirect('movies:index')
         
 
