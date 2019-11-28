@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,14 +12,15 @@
 
 
   <!-- Bootstrap -->
-  <link href="../../../static/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../../../static/css/font-awesome.min.css">
-  <link rel="stylesheet" href="../../../static/css/jquery.bxslider.css">
-  <link rel="stylesheet" type="text/css" href="../../../static/css/isotope.css" media="screen" />
-  <link rel="stylesheet" href="../../../static/css/animate.css">
-  <link rel="stylesheet" href="../../../static/js/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
-  <link href="../../../static/css/prettyPhoto.css" rel="stylesheet">
-  <link href="../../../static/css/style.css" rel="stylesheet">
+  {% comment %} {% static '/css/style.css' %} {% endcomment %}
+  <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static '/css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.bxslider.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/isotope.css' %}" media="screen" />
+  <link rel="stylesheet" href="{% static '/css/animate.css' %}">
+  <link rel="stylesheet" href=" {% static 'js/fancybox/jquery.fancybox.css' %}" type="text/css" media="screen" />
+  <link href="{% static '/css/prettyPhoto.css' %}" rel="stylesheet">
+  <link href="{% static '/css/style.css' %}" rel="stylesheet">
 
 
 
@@ -26,7 +28,7 @@
   <title>index</title>
 </head>
 <body>
-  <header class="container">
+  <header>
 
 
     <nav class="navbar navbar-default navbar-static-top" role="navigation">
@@ -40,18 +42,18 @@
 							<span class="icon-bar"></span>
 						</button>
             <div class="navbar-brand">
-              <a href="index.html"><h1><span>M</span>ulti</h1></a>
+              <a href="index.html"><h1><span>L</span>ike<span>M</span>ovie</h1></a>
             </div>
           </div>
 
           <div class="navbar-collapse collapse">
             <div class="menu">
               <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation"><a href="index.html">Home</a></li>
-                {% comment %} <li role="presentation"><a href="services.html">Services</a></li> {% endcomment %}
-                {% comment %} <li role="presentation"><a href="blog.html">Blog</a></li> {% endcomment %}
-                {% comment %} <li role="presentation"><a href="portfolio.html" class="active">Portfolio</a></li> {% endcomment %}
-                {% comment %} <li role="presentation"><a href="contact.html">Contact</a></li> {% endcomment %}
+                <li role="presentation"><a href=" {% url 'movies:index' %} " class="active">Home</a></li>
+                <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
+                <li role="presentation"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                <li role="presentation"><a href="{% url 'accounts:signup' %}" >Signup</a></li>
+                <li role="presentation"><a href="{% url 'accounts:delete' %}">Signout</a></li>
               </ul>
             </div>
           </div>
@@ -69,145 +71,12 @@
       <div class="col-lg-12">
         <div class="text-center">
           <div class="wow bounceInDown" data-wow-offset="0" data-wow-delay="0.3s">
-            <h2>Portfolio</h2>
+            <h2>영화같은 일상을 꿈꾸는 당신께</h2>
           </div>
           <div class="wow bounceInDown" data-wow-offset="0" data-wow-delay="0.6s">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut</p>
+            <h4>맞춤형 영화를 추천해드립니다.</h4>
           </div>
         </div>
-
-
-        <ul class="portfolio-filter text-center">
-          <li><a class="btn btn-default active" href="#" data-filter="*">All Works</a></li>
-          <li><a class="btn btn-default" href="#" data-filter=".bootstrap">Creative</a></li>
-          <li><a class="btn btn-default" href="#" data-filter=".html">Photography</a></li>
-          <li><a class="btn btn-default" href="#" data-filter=".wordpress">Web Development</a></li>
-        </ul>
-        <!--/#portfolio-filter-->
-
-        <div class="row">
-          <div class="portfolio-items">
-            <div class="portfolio-item apps col-xs-12 col-sm-4 col-md-3">
-              <div class="recent-work-wrap">
-                <img class="img-responsive" src="images/portfolio/recent/item1.png" alt="">
-                <div class="overlay">
-                  <div class="recent-work-inner">
-                    <h3><a href="#">Business theme</a></h3>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority</p>
-                    <a class="preview" href="images/portfolio/full/item1.png" rel="prettyPhoto"><i class="fa fa-eye"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/.portfolio-item-->
-
-            <div class="portfolio-item joomla bootstrap col-xs-12 col-sm-4 col-md-3">
-              <div class="recent-work-wrap">
-                <img class="img-responsive" src="images/portfolio/recent/item2.png" alt="">
-                <div class="overlay">
-                  <div class="recent-work-inner">
-                    <h3><a href="#">Business theme</a></h3>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority</p>
-                    <a class="preview" href="images/portfolio/full/item2.png" rel="prettyPhoto"><i class="fa fa-eye"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/.portfolio-item-->
-
-            <div class="portfolio-item bootstrap wordpress col-xs-12 col-sm-4 col-md-3">
-              <div class="recent-work-wrap">
-                <img class="img-responsive" src="images/portfolio/recent/item3.png" alt="">
-                <div class="overlay">
-                  <div class="recent-work-inner">
-                    <h3><a href="#">Business theme</a></h3>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority</p>
-                    <a class="preview" href="images/portfolio/full/item3.png" rel="prettyPhoto"><i class="fa fa-eye"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/.portfolio-item-->
-
-            <div class="portfolio-item joomla wordpress apps col-xs-12 col-sm-4 col-md-3">
-              <div class="recent-work-wrap">
-                <img class="img-responsive" src="images/portfolio/recent/item4.png" alt="">
-                <div class="overlay">
-                  <div class="recent-work-inner">
-                    <h3><a href="#">Business theme</a></h3>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority</p>
-                    <a class="preview" href="images/portfolio/full/item4.png" rel="prettyPhoto"><i class="fa fa-eye"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/.portfolio-item-->
-
-            <div class="portfolio-item joomla html bootstrap col-xs-12 col-sm-4 col-md-3">
-              <div class="recent-work-wrap">
-                <img class="img-responsive" src="images/portfolio/recent/item5.png" alt="">
-                <div class="overlay">
-                  <div class="recent-work-inner">
-                    <h3><a href="#">Business theme</a></h3>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority</p>
-                    <a class="preview" href="images/portfolio/full/item5.png" rel="prettyPhoto"><i class="fa fa-eye"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/.portfolio-item-->
-
-            <div class="portfolio-item wordpress html apps col-xs-12 col-sm-4 col-md-3">
-              <div class="recent-work-wrap">
-                <img class="img-responsive" src="images/portfolio/recent/item6.png" alt="">
-                <div class="overlay">
-                  <div class="recent-work-inner">
-                    <h3><a href="#">Business theme</a></h3>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority</p>
-                    <a class="preview" href="images/portfolio/full/item6.png" rel="prettyPhoto"><i class="fa fa-eye"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/.portfolio-item-->
-
-            <div class="portfolio-item wordpress html col-xs-12 col-sm-4 col-md-3">
-              <div class="recent-work-wrap">
-                <img class="img-responsive" src="images/portfolio/recent/item7.png" alt="">
-                <div class="overlay">
-                  <div class="recent-work-inner">
-                    <h3><a href="#">Business theme</a></h3>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority</p>
-                    <a class="preview" href="images/portfolio/full/item7.png" rel="prettyPhoto"><i class="fa fa-eye"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/.portfolio-item-->
-
-            <div class="portfolio-item wordpress html bootstrap col-xs-12 col-sm-4 col-md-3">
-              <div class="recent-work-wrap">
-                <img class="img-responsive" src="images/portfolio/recent/item8.png" alt="">
-                <div class="overlay">
-                  <div class="recent-work-inner">
-                    <h3><a href="#">Business theme</a></h3>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority</p>
-                    <a class="preview" href="images/portfolio/full/item8.png" rel="prettyPhoto"><i class="fa fa-eye"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/.portfolio-item-->
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!--/#portfolio-item-->
-
-
-
-
 
 
 
@@ -240,9 +109,9 @@
     <p>로그인 됨</p>
 
 
-    <div id="app">
-        <select v-model="selected">
-            <option v-for="option in options" v-bind:value="option.value">
+    <div id="app" style="margin:0 auto">
+        <select v-model="selected" style="color:black">
+            <option v-for="option in options" v-bind:value="option.value"> 
                 [[ option.text ]]
             </option>
         </select>
@@ -262,17 +131,60 @@
                     <p>{{ movie }}</p>
                 {% endif %}
             {% endfor %}
-            <li class='row mb-1'>
+            <li class='row'>
                
                 {% for movie in buk %}
                     {% if movie in movies %}
+
+<div class="card" style="width: 18rem;">
+  <img src="{{ movie.poster_url }}" class="card-img-top" alt="사진">
+  <div class="card-body">
+    <h6 class="card-title text-center">{{movie.movieNm}}</h6>
+    {% comment %} <p class="card-text">{{movie.description}}</p> {% endcomment %}
+    {% comment %} <a class="preview" href="  {% url 'movies:detail' movie.pk %}   " rel="prettyPhoto" data-target="#{{movie.pk}}" ><i class="fa fa-eye"></i> View {% endcomment %}
+    {% comment %} <a class="preview" href="#{{movie.pk}}" rel="prettyPhoto" data-target="#{{movie.pk}}" ><i class="fa fa-eye"></i> View {% endcomment %}
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#movie-{{movie.pk}}">
+          Launch demo modal
+        </button> 
+
+        <!-- Modal -->
+        <div class="modal fade" id="movie-{{movie.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+    {% comment %} </a> {% endcomment %}
+
+    {% comment %} <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">영화 상세보기</a> {% endcomment %}
+  </div>
+</div>
+
+{% comment %} 
+
                         <div class='card col-2'>
                         <a href=" {% url 'movies:detail' movie.pk %}  ">
                         {{movie.movieNm}}
                         <br>
                         <img src="{{ movie.poster_url }}" alt="사진">
                         </a>
-                        </div>
+                        </div> {% endcomment %}
                     {% endif %}
                 {% endfor %}
             </li>
@@ -323,26 +235,15 @@
 
   <footer>
     <div class="footer">
-      <div class="container">
+      <div>
         <div class="col-md-4 wow fadeInUp" data-wow-offset="0" data-wow-delay="0.2s">
           <h2>Multi</h2>
           <p>In a elit in lorem congue varius. Sed nec arcu. Etiam sit amet augue. Fusce fermen tum neque a rutrum varius odio pede ullamcorp-er tellus ut dignissim nisi risus non tortor. Aliquam mollis neque.</p>
-        
-        <form action=" {% url 'accounts:delete' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">회원탈퇴</button>
-        </form>
         </div>
       </div>
     </div>
 
   </footer>
-
-
-
-
-
-
 
 
 
