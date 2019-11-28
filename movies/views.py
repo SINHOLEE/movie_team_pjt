@@ -1,4 +1,3 @@
-
 from django.shortcuts import render,get_object_or_404,redirect
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.decorators import login_required
@@ -13,7 +12,6 @@ from accounts.models import User
 from .forms import RatingForm
 from django.contrib.auth import get_user_model
 import requests
-from IPython import embed
 
 
 # Create your views here.
@@ -114,6 +112,7 @@ def detail(request, movie_pk):
     }
     return render(request, 'movies/detail.html', context)
 
+
 def movieby_genre(request, genre_pk):
     genre = Genre.objects.get(pk=genre_pk)
     print(genre.movies.all())
@@ -124,8 +123,6 @@ def movieby_genre(request, genre_pk):
         'movies':movies,
     }
     return render(request, 'movies/movieby_genre.html', context)
-
-
 
 
 @login_required
