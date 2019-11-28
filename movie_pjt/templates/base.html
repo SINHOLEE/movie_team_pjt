@@ -38,6 +38,14 @@
     {% endif %}
 
     <a href=" {% url 'movies:index'%} ">Home</a>
+
+    {% if request.user.is_authenticated %}
+    <form action="{% url 'movies:genres_change' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">선호 장르 바꾸기</button>
+    </form>
+    
+    {% endif %}
     <hr>
   </header>
   <div class="container">
