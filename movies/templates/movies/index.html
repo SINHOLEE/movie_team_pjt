@@ -23,11 +23,9 @@
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
 
-
-
   <title>index</title>
 </head>
-<body>
+<body style="background-color:#ffeee6">
   <header>
 
 
@@ -42,7 +40,7 @@
 							<span class="icon-bar"></span>
 						</button>
             <div class="navbar-brand">
-              <a href="index.html"><h1><span>L</span>ike<span>M</span>ovie</h1></a>
+              <a href=" {% url 'movies:index' %}  "><h1><span>L</span>ike<span>M</span>ovie</h1></a>
             </div>
           </div>
 
@@ -50,6 +48,10 @@
             <div class="menu">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"><a href=" {% url 'movies:index' %} " class="active">Home</a></li>
+
+
+
+                
                 <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
                 <li role="presentation"><a href="{% url 'accounts:logout' %}">Logout</a></li>
                 <li role="presentation"><a href="{% url 'accounts:signup' %}" >Signup</a></li>
@@ -136,45 +138,17 @@
                 {% for movie in buk %}
                     {% if movie in movies %}
 
-<div class="card" style="width: 18rem;">
-  <img src="{{ movie.poster_url }}" class="card-img-top" alt="사진">
-  <div class="card-body">
-    <h6 class="card-title text-center">{{movie.movieNm}}</h6>
-    {% comment %} <p class="card-text">{{movie.description}}</p> {% endcomment %}
-    {% comment %} <a class="preview" href="  {% url 'movies:detail' movie.pk %}   " rel="prettyPhoto" data-target="#{{movie.pk}}" ><i class="fa fa-eye"></i> View {% endcomment %}
-    {% comment %} <a class="preview" href="#{{movie.pk}}" rel="prettyPhoto" data-target="#{{movie.pk}}" ><i class="fa fa-eye"></i> View {% endcomment %}
+                              <div class="card" style="width: 18rem;">
+                                <img src="{{ movie.poster_url }}" class="card-img-top" alt="사진">
+                                <div class="card-body">
+                                  <h6 class="card-title text-center">{{movie.movieNm}}</h6>
+                                  {% comment %} <p class="card-text">{{movie.description}}</p> {% endcomment %}
+                                  <a class="preview" href="  {% url 'movies:detail' movie.pk %} "><i class="fa fa-eye"></i> View Detail..
+                                  {% comment %} <a  href="#movie-{{movie.pk}}" rel="prettyPhoto" ><i class="fa fa-eye"></i> View
+                                  </a> {% endcomment %}
 
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#movie-{{movie.pk}}">
-          Launch demo modal
-        </button> 
-
-        <!-- Modal -->
-        <div class="modal fade" id="movie-{{movie.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                ...
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div>
-            </div>
-          </div>
-        </div>
-    
-
-  </div>
+                                </div>
 </div>
-
-
                     {% endif %}
                 {% endfor %}
             </li>
@@ -238,8 +212,6 @@
 </script>
 
   </div>
-
-
 
   <footer>
     <div class="footer">
