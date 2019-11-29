@@ -80,7 +80,6 @@ def get_like_genres(request):
     return redirect('movies:index')
         
 
-@require_POST
 def genres_change(request):
     
     user = request.user

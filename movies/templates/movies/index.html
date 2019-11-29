@@ -126,6 +126,12 @@
 
 
     {% if genres_length == 3%}
+        <a href="{% url 'movies:genres_change' %}">
+            <button class="bts btn-danger" style="submit">
+        선호장르 바꾸기
+            </button>
+        </a>
+
         {% for buk in bucket %}
             {% for movie in buk %}
                 {% if movie in movies %}
