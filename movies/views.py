@@ -196,8 +196,8 @@ def delete_rating(request, rating_pk):
 def getmovies(request):
     cover = {}
     return
-    for i in range(10):
-        targetDt = datetime(2019, 11, 21) - timedelta(weeks = i )
+    for i in range(2):
+        targetDt = datetime(2016, 11, 21) - timedelta(weeks = i )
         targetDt = targetDt.strftime(f'%Y%m%d') # strftime : str특정 포멧으로 바꾸게 해준다.
 
         key = config('API_KEY')
