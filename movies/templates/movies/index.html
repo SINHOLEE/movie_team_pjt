@@ -49,9 +49,6 @@
             <div class="menu">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"><a href=" {% url 'movies:index' %} " class="active">Home</a></li>
-
-
-
                 {% if user.is_authenticated %}
                 <li role="presentation"><a href="{% url 'accounts:logout' %}">Logout</a></li>
                 <li role="presentation"><a href="{% url 'accounts:update' %}">Edit</a></li>
@@ -59,20 +56,13 @@
                 <li role="presentation"><a href="{% url 'accounts:login' %}">Login</a></li>
                 <li role="presentation"><a href="{% url 'accounts:signup' %}" >Signup</a></li>
                 {% endif %}
-
-
-              
               </ul>
             </div>
           </div>
         </div>
       </div>
     </nav>
-
   </header>
-
-
-
 
   <section id="portfolio">
     <div class="container">
@@ -84,35 +74,21 @@
             {% else %}
             <h2>영화같은 일상을 꿈꾸는 당신께</h2>
             {% endif %}
-            
           </div>
           <div class="wow bounceInDown" data-wow-offset="0" data-wow-delay="0.6s">
             <h4>맞춤형 영화를 추천해드립니다.</h4>
           </div>
         </div>
-
-
-
   </header>
-  
-
-
-
-
-
-
-
 
   <div class="container">
   {% comment %} superuser에 한해서 영화 등록, 수정, 삭제가 이루어져야 한다는 것 반영 {% endcomment %}
-{% if request.user.is_superuser  %}
-<a href="{% url 'movies:getmovies' %}">영화정보 받기(관리자 전용 버튼)</a> 
-{% endif %}
-{% comment %} 수정, 삭제까지는 어떻게 구현해야? {% endcomment %}
-<div id="app">
-{% if request.user.is_authenticated %}
-
-
+    {% if request.user.is_superuser  %}
+    <a href="{% url 'movies:getmovies' %}">영화정보 받기(관리자 전용 버튼)</a> 
+    {% endif %}
+    {% comment %} 수정, 삭제까지는 어떻게 구현해야? {% endcomment %}
+    <div id="app">
+    {% if request.user.is_authenticated %}
     <div id="app" style="margin:0 auto">
         <select v-model="selected" style="color:black">
             <option v-for="option in options" v-bind:value="option.value"> 
@@ -124,59 +100,52 @@
         <hr>
     </div> 
 
-
     {% if genres_length == 3%}
         <a href="{% url 'movies:genres_change' %}">
             <button class="bts btn-danger" style="submit">
         선호장르 바꾸기
             </button>
         </a>
-
-        {% for buk in bucket %}
-            {% for movie in buk %}
-                {% if movie in movies %}
-                    {{ pass }}
-                {% else %}
-                    <p>{{ movie }}</p>
-                {% endif %}
+        <ul>
+        {% for genre in genres %}
+          <div class='genre-{{genre}}' > 
+          <h2>
+          {{genre}}
+          </h2>
+          </div>
+          <li class='row'>
+            {% for movie in genre.movies.all|slice:":6" %}
+                <div class="card" style="width: 18rem;">
+                <img src="{{ movie.poster_url }}" class="card-img-top" alt="사진">
+                <div class="card-body">
+                  <h6 class="card-title text-center">{{movie.movieNm}}</h6>
+                  <a class="preview" href="  {% url 'movies:detail' movie.pk %} "><i class="fa fa-eye"></i> View Detail..
+                  </a>
+                </div>
+            </div>
             {% endfor %}
-            <li class='row'>
-               
-                {% for movie in buk %}
-                    {% if movie in movies %}
-
-                              <div class="card" style="width: 18rem;">
-                                <img src="{{ movie.poster_url }}" class="card-img-top" alt="사진">
-                                <div class="card-body">
-                                  <h6 class="card-title text-center">{{movie.movieNm}}</h6>
-                                  {% comment %} <p class="card-text">{{movie.description}}</p> {% endcomment %}
-                                  <a class="preview" href="  {% url 'movies:detail' movie.pk %} "><i class="fa fa-eye"></i> View Detail..
-                                  {% comment %} <a  href="#movie-{{movie.pk}}" rel="prettyPhoto" ><i class="fa fa-eye"></i> View
-                                  </a> {% endcomment %}
-                                  </a>
-                                </div>
-                            </div>
-                    {% endif %}
-                {% endfor %}
-            </li>
+          </li>
         {% endfor %}
+      </ul>
     
     {% else %}
 
         <P>선호하는 장르를 선택해 주세요 꼭! 3가지 종류를 선택하시고, 중복선택을 지양해 주세요</P>
 
-        <form action="{% url 'movies:get_like_genres' %}" method="POST" >
+        <form action="{% url 'movies:get_like_genres' %}" method="POST" class="aaa">
         {% csrf_token %}
         <div class="row form-group mb-1">
             {% for i in priorities %}
             <div class='card col-4 '>
                 <label for="exampleFormControlSelect1">{{ i }}번째 선호 장르</label>
                 <select class="form-control" name="genre{{i}}" id="exampleFormControlSelect1">
-                    <option value="">선택</option>
+                    <option value="" >선택</option>
                     {% for genreA in genres_all %}
                         <option value="{{ genreA }} ">{{ genreA }}</option>
                     {% endfor %}
                 </select>
+            
+
             </div>
             {% endfor %}
         </div>
@@ -203,6 +172,7 @@
     delimiters: ['[[', ']]'],
     el: '#app',
     data: {
+        genresSelected: [],
         selected: '16',
         options: [
         { text: '애니메이션', value: '1' },
@@ -227,12 +197,7 @@
     }
     })
 </script>
-
   </div>
-
-
-
-
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

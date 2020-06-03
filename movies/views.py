@@ -12,48 +12,36 @@ from accounts.models import User
 from .forms import RatingForm
 from django.contrib.auth import get_user_model
 import requests
-
+from pprint import pprint
 
 # Create your views here.
 def index(request):
-    movies = Movie.objects.all()
     genres_all = Genre.objects.all()
     user = request.user
-    if user.is_authenticated:
-        genres = user.liked_genres.all()
-        bucket = [[],[],[]]
-        if len(genres) == 3:
-            for i in range(3):
-                genre = genres[i]
-                cnt = 0
-                bucket[i].append(genre)
-                for movie in movies:
-                    if genre in movie.genre.all():
-                        bucket[i].append(movie)
-                        cnt += 1
-                    if cnt == 6:
-                        break
-        pprint(bucket)
-    else:
-        bucket = []   
-        genres = [1]
+    if not user.is_authenticated:
+        return render(request, 'movies/index.html')
+    # print(str(aa.query))
+        # aa = User.objects.prefetch_related("liked_genres").get(pk=user.id)
+        # genres = aa.liked_genres.all()
+    genres = user.liked_genres.all()
+    bucket = []
+    # pprint(bucket)
     context = {
         'priorities': [1,2,3],
         'genres_all':genres_all,
         'bucket' : bucket,
-        'movies' : movies,
         'genres':genres,
         'genres_length' : len(genres),
         }
+    # pprint(context)
+
     return render(request, 'movies/index.html', context)
 
-
-
+@login_required
 @require_POST
 def get_like_genres(request):
-    print(request.user)
-    print(request.POST)
     user = request.user
+    print(request.POST)
     genres = ['genre1', 'genre2', 'genre3']
     flag = True
     new_set = set()
@@ -70,7 +58,7 @@ def get_like_genres(request):
             # print('genre_item', genre_item)
             # print(request.POST)
             # print(request.POST.get(genre_item))
-            genre = Genre.objects.filter(genreNm=request.POST.get(genre_item).strip()).first()
+            genre = Genre.objects.get(genreNm=request.POST.get(genre_item).strip())
             # print('genre',genre)
             user.liked_genres.add(genre)
 
@@ -81,10 +69,8 @@ def get_like_genres(request):
         
 
 def genres_change(request):
-    
     user = request.user
     if user.is_authenticated:
-
         my_genres = user.liked_genres.all()
         for gn in my_genres:
             gn.liked_users.remove(user)
@@ -114,13 +100,15 @@ def detail(request, movie_pk):
 
 def movieby_genre(request, genre_pk):
     genre = Genre.objects.get(pk=genre_pk)
-    print(genre.movies.all())
+    # print(genre.movies.all())
     movies = genre.movies.all()
+    print(genre)
     print(movies)
     context = {
         'genre':genre,
         'movies':movies,
     }
+    print(request)
     return render(request, 'movies/movieby_genre.html', context)
 
 
@@ -195,17 +183,19 @@ def delete_rating(request, rating_pk):
 
 def getmovies(request):
     cover = {}
-    return
-    for i in range(2):
-        targetDt = datetime(2016, 11, 21) - timedelta(weeks = i )
+    return redirect('movies:index')
+    for i in range(1000):
+        print(i)
+        targetDt = datetime(2015, 11, 21) - timedelta(weeks = i )
         targetDt = targetDt.strftime(f'%Y%m%d') # strftime : str특정 포멧으로 바꾸게 해준다.
 
-        key = config('API_KEY')
+        key = '02a7c021d78d6a1cc9f58680759ea5a4'
         weekGb = 0 # 주일 + 주말
         base_url ='http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json' 
         api_url = f'{base_url}?key={key}&targetDt={targetDt}&weekGb={weekGb}'
         response = requests.get(api_url)
         data = response.json()
+        # print(data)
         for rank in range(len(data['boxOfficeResult']['weeklyBoxOfficeList'])):
                 if data['boxOfficeResult']['weeklyBoxOfficeList'][rank]['movieCd'] in cover.keys():
                 # if data['boxOfficeResult']['weeklyBoxOfficeList'][rank]['movieCd'] in cover[data['boxOfficeResult']['weeklyBoxOfficeList'][rank]['movieCd']].keys(): # 코드 번호
